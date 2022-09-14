@@ -1,6 +1,6 @@
 #Security group for AWS ELB
 resource "aws_security_group" "elb-securitygroup" {
-  vpc_id      = aws_vpc.levelupvpc.id
+  vpc_id      = aws_vpc.demo-vpc.id
   name        = "elb-sg"
   description = "security group for Elastic Load Balancer"
   
@@ -25,7 +25,7 @@ resource "aws_security_group" "elb-securitygroup" {
 
 #Security group for the Instances
 resource "aws_security_group" "instance-securitygroup" {
-  vpc_id      = aws_vpc.levelupvpc.id
+  vpc_id      = aws_vpc.demo-vpc.id
   name        = var.INSTANCE_SG_NAME
   description = "security group for instances"
   

@@ -27,7 +27,7 @@ resource "aws_autoscaling_group" "levelup-autoscaling" {
   max_size                  = var.AUTOSCALING_GROUP_MAX_SIZE
   health_check_grace_period = var.HEALTH_CHECK_GRACE_PERIOD
   health_check_type         = var.HEALTH_CHECK_TYPE
-  load_balancers            = [aws_elb.levelup-elb.name]
+  load_balancers            = [aws_elb.tf-elb.name]
   force_delete              = true
 
   tag {

@@ -2,7 +2,7 @@
 resource "aws_elb" "tf-elb" {
   name            = var.ELB_NAME
   subnets         = [aws_subnet.public-subnet-A.id, aws_subnet.public-subnet-B.id]
-  security_groups = [elb-securitygroup.id]
+  security_groups = [aws_security_group.elb-securitygroup.id]
   
   listener {
     instance_port     = 80
