@@ -51,31 +51,3 @@ variable "HEALTH_CHECK_TYPE" {
   default = "EC2"
 }
 
-variable "AUTOSCALING_POLICY_NAME" {
-  default = "tf-cpu-policy"
-}
-
-variable "AUTO_DE_SCALING_POLICY_NAME" {
-  default = "tf-cpu-policy-scaledown"
-}
-
-variable "AUTOSCALING_POLICY_ADJUSTMENT_TYPE" {
-  default = "ChangeInCapacity"
-}
-
-variable "AUTOSCALING_POLICY_TYPE" {
-  default = "SimpleScaling"
-}
-
-variable "AUTOSCALING_POLICY_SCALING_ADJUSTMENT" {
-  default = "1"
-}
-
-variable "AUTO_DE_SCALING_POLICY_SCALING_ADJUSTMENT" {
-  default = "-1"
-}
-
-variable "AUTOSCALING_POLICY_COOLDOWN" {
-  default = "200"
-}
-
