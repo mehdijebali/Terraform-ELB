@@ -18,11 +18,6 @@ variable "INSTANCE_TYPE" {
   default = "t2.micro"
 }
 
-variable "VPC_ZONE_IDENTIFIER" {
-  type = list
-  default = ["subnet-0e5871e683b310bc3","subnet-04b04399210978637"]
-}
-
 variable "LAUNCH_CONFIGURATION_NAME" {
   default = "tf-launchconfig"
 }
@@ -36,7 +31,7 @@ variable "AUTOSCALING_GROUP_NAME" {
 }
 
 variable "AUTOSCALING_GROUP_MIN_SIZE" {
-  default = 1
+  default = 2
 }
 
 variable "AUTOSCALING_GROUP_MAX_SIZE" {
@@ -48,6 +43,6 @@ variable "HEALTH_CHECK_GRACE_PERIOD" {
 }
 
 variable "HEALTH_CHECK_TYPE" {
-  default = "EC2"
+  default = "ELB"
 }
 
