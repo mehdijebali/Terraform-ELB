@@ -1,6 +1,6 @@
 #AWS ELB Configuration
-resource "aws_elb" "levelup-elb" {
-  name            = "levelup-elb"
+resource "aws_elb" "tf-elb" {
+  name            = var.ELB_NAME
   subnets         = [aws_subnet.levelupvpc-public-1.id, aws_subnet.levelupvpc-public-2.id]
   security_groups = [aws_security_group.levelup-elb-securitygroup.id]
   
@@ -24,7 +24,7 @@ resource "aws_elb" "levelup-elb" {
   connection_draining_timeout = 400
 
   tags = {
-    Name = "levelup-elb"
+    Name = "tf-elb"
   }
 }
 

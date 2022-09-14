@@ -46,3 +46,6 @@ variable "HEALTH_CHECK_TYPE" {
   default = "ELB"
 }
 
+variable "ELB_NAME" {
+  default = "tf-elb"
+}
