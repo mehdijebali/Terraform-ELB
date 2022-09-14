@@ -4,7 +4,7 @@ resource "aws_launch_configuration" "tf-launchconfig" {
   image_id        = var.AMI_ID
   instance_type   = var.INSTANCE_TYPE
   key_name        = aws_key_pair.tf-ssh-key.key_name
-  security_groups = [aws_security_group.levelup-instance.id]
+  security_groups = [aws_security_group.instance-securitygroup.id]
   user_data       = "#!/bin/bash\napt-get update\napt-get -y install net-tools nginx\nMYIP=`ifconfig | grep -E '(inet 10)|(addr:10)' | awk '{ print $2 }' | cut -d ':' -f2`\necho 'Hello Team\nThis is my IP: '$MYIP > /var/www/html/index.html"
 
   lifecycle {
@@ -21,7 +21,7 @@ resource "aws_key_pair" "tf-ssh-key" {
 #Autoscaling Group
 resource "aws_autoscaling_group" "levelup-autoscaling" {
   name                      = var.AUTOSCALING_GROUP_NAME
-  vpc_zone_identifier       = [aws_subnet.levelupvpc-public-1.id, aws_subnet.levelupvpc-public-2.id]
+  vpc_zone_identifier       = [aws_subnet.public-subnet-A.id, aws_subnet.public-subnet-B.id]
   launch_configuration      = aws_launch_configuration.tf-launchconfig.name
   min_size                  = var.AUTOSCALING_GROUP_MIN_SIZE
   max_size                  = var.AUTOSCALING_GROUP_MAX_SIZE
@@ -38,5 +38,5 @@ resource "aws_autoscaling_group" "levelup-autoscaling" {
 }
 
 output "ELB" {
-  value = aws_elb.levelup-elb.dns_name
+  value = aws_elb.tf-elb.dns_name
 }
