@@ -2,7 +2,7 @@
 resource "aws_elb" "tf-elb" {
   name            = var.ELB_NAME
   subnets         = [aws_subnet.levelupvpc-public-1.id, aws_subnet.levelupvpc-public-2.id]
-  security_groups = [aws_security_group.levelup-elb-securitygroup.id]
+  security_groups = [elb-securitygroup.id]
   
   listener {
     instance_port     = 80
@@ -24,14 +24,14 @@ resource "aws_elb" "tf-elb" {
   connection_draining_timeout = 400
 
   tags = {
-    Name = "tf-elb"
+    Name = var.ELB_NAME
   }
 }
 
 #Security group for AWS ELB
-resource "aws_security_group" "levelup-elb-securitygroup" {
+resource "aws_security_group" "elb-securitygroup" {
   vpc_id      = aws_vpc.levelupvpc.id
-  name        = "levelup-elb-sg"
+  name        = "elb-sg"
   description = "security group for Elastic Load Balancer"
   
   egress {
@@ -49,14 +49,14 @@ resource "aws_security_group" "levelup-elb-securitygroup" {
   }
 
   tags = {
-    Name = "levelup-elb-sg"
+    Name = "elb-sg"
   }
 }
 
 #Security group for the Instances
-resource "aws_security_group" "levelup-instance" {
+resource "aws_security_group" "instance-securitygroup" {
   vpc_id      = aws_vpc.levelupvpc.id
-  name        = "levelup-instance"
+  name        = var.INSTANCE_SG_NAME
   description = "security group for instances"
   
   egress {
@@ -77,10 +77,10 @@ resource "aws_security_group" "levelup-instance" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = [aws_security_group.levelup-elb-securitygroup.id]
+    security_groups = [aws_security_group.elb-securitygroup.id]
   }
 
   tags = {
-    Name = "levelup-instance"
+    Name = var.INSTANCE_SG_NAME
   }
 }

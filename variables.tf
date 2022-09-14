@@ -49,3 +49,11 @@ variable "HEALTH_CHECK_TYPE" {
 variable "ELB_NAME" {
   default = "tf-elb"
 }
+
+variable "ELB_SG_NAME" {
+  default = "elb-sg"
+}
+
+variable "INSTANCE_SG_NAME" {
+  default = "instance-sg"
+}
