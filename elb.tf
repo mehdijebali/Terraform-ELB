@@ -1,7 +1,7 @@
 #AWS ELB Configuration
 resource "aws_elb" "tf-elb" {
   name            = var.ELB_NAME
-  subnets         = [aws_subnet.levelupvpc-public-1.id, aws_subnet.levelupvpc-public-2.id]
+  subnets         = [aws_subnet.public-subnet-A.id, aws_subnet.public-subnet-B.id]
   security_groups = [elb-securitygroup.id]
   
   listener {
