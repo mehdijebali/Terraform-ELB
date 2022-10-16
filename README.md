@@ -1,5 +1,5 @@
 # Provision AWS ELB with Terraform
-In this Lab, we will apply an Elastic Load balancer that distributes the trafic accross two instances. 
+In this Lab, we will apply an Elastic Load balancer that distributes the traffic accross two instances. 
 ## About ELB 
 Elastic Load Balancing automatically distributes your incoming application traffic across all the EC2 instances that you are running. Elastic Load Balancing helps to manage incoming requests by optimally routing traffic so that no one instance is overwhelmed.
 
