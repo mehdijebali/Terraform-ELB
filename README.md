@@ -11,7 +11,7 @@ After attaching a load balancer to your Auto Scaling group, you can configure yo
 ## Instructions
 1. Clone the project 
 ```
-git clone https://github.com/mehdijebali/Terraform-VPC.git
+git clone https://github.com/mehdijebali/Terraform-ELB.git
 ```
 2. In the project root directory, create an SSH key and name it **levelup_key**
 ```
@@ -50,4 +50,4 @@ To test the load balancing, we can send requests multiple times to the load bala
 1. First request
 ![](./Lab_Results/out1.png)
 2. Second request
-![](./Lab_Results/out2.png
+![](./Lab_Results/out2.png)
