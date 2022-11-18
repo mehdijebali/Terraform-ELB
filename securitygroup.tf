@@ -1,8 +1,8 @@
 #Security group for AWS ELB
 resource "aws_security_group" "elb-securitygroup" {
   vpc_id      = aws_vpc.demo-vpc.id
-  name        = "elb-sg"
-  description = "security group for Elastic Load Balancer"
+  name        = var.ELB_SG_NAME
+  description = var.ELB_SG_DESCRIPTION
   
   egress {
     from_port   = 0
@@ -19,7 +19,7 @@ resource "aws_security_group" "elb-securitygroup" {
   }
 
   tags = {
-    Name = "elb-sg"
+    Name = "${var.ELB_SG_NAME}"
   }
 }
 
@@ -27,7 +27,7 @@ resource "aws_security_group" "elb-securitygroup" {
 resource "aws_security_group" "instance-securitygroup" {
   vpc_id      = aws_vpc.demo-vpc.id
   name        = var.INSTANCE_SG_NAME
-  description = "security group for instances"
+  description = var.INSTANCE_SG_DESCRIPTION
   
   egress {
     from_port   = 0
@@ -51,6 +51,6 @@ resource "aws_security_group" "instance-securitygroup" {
   }
 
   tags = {
-    Name = var.INSTANCE_SG_NAME
+    Name = "${var.INSTANCE_SG_NAME}"
   }
 }

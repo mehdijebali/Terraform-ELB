@@ -57,3 +57,11 @@ variable "ELB_SG_NAME" {
 variable "INSTANCE_SG_NAME" {
   default = "instance-sg"
 }
+
+variable "INSTANCE_SG_DESCRIPTION" {
+  default = "security group for instances"
+}
+
+variable "ELB_SG_DESCRIPTION" {
+  default = "security group for Elastic Load Balancer"
+}
