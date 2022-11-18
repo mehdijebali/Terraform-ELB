@@ -5,8 +5,7 @@ resource "aws_launch_configuration" "tf-launchconfig" {
   instance_type   = var.INSTANCE_TYPE
   key_name        = aws_key_pair.tf-ssh-key.key_name
   security_groups = [aws_security_group.instance-securitygroup.id]
-  user_data       = "#!/bin/bash\napt-get update\napt-get -y install net-tools nginx\nMYIP=`ifconfig | grep -E '(inet 10)|(addr:10)' | awk '{ print $2 }' | cut -d ':' -f2`\necho 'Hello Team\nThis is my IP: '$MYIP > /var/www/html/index.html"
-
+  user_data       = file("installnginx.sh")
   lifecycle {
     create_before_destroy = true
   }
