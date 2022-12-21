@@ -1,6 +1,6 @@
 #Security group for AWS ELB
 resource "aws_security_group" "elb-securitygroup" {
-  vpc_id      = aws_vpc.demo-vpc.id
+  vpc_id      = module.network.vpc_id
   name        = var.ELB_SG_NAME
   description = var.ELB_SG_DESCRIPTION
   
@@ -25,7 +25,7 @@ resource "aws_security_group" "elb-securitygroup" {
 
 #Security group for the Instances
 resource "aws_security_group" "instance-securitygroup" {
-  vpc_id      = aws_vpc.demo-vpc.id
+  vpc_id      = module.network.vpc_id
   name        = var.INSTANCE_SG_NAME
   description = var.INSTANCE_SG_DESCRIPTION
   

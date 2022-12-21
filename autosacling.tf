@@ -20,7 +20,7 @@ resource "aws_key_pair" "tf-ssh-key" {
 #Autoscaling Group
 resource "aws_autoscaling_group" "levelup-autoscaling" {
   name                      = var.AUTOSCALING_GROUP_NAME
-  vpc_zone_identifier       = [aws_subnet.public-subnet-A.id, aws_subnet.public-subnet-B.id]
+  vpc_zone_identifier       = [module.network.public_subnet_A_id, module.network.public_subnet_B_id]
   launch_configuration      = aws_launch_configuration.tf-launchconfig.name
   min_size                  = var.AUTOSCALING_GROUP_MIN_SIZE
   max_size                  = var.AUTOSCALING_GROUP_MAX_SIZE
