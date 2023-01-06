@@ -5,7 +5,6 @@ resource "aws_launch_configuration" "tf-launchconfig" {
   instance_type   = var.INSTANCE_TYPE
   key_name        = aws_key_pair.tf-ssh-key.key_name
   security_groups = [aws_security_group.instance-securitygroup.id]
-  user_data       = file("installnginx.sh")
   lifecycle {
     create_before_destroy = true
   }
