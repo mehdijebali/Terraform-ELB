@@ -31,7 +31,7 @@ variable "AUTOSCALING_GROUP_NAME" {
 }
 
 variable "AUTOSCALING_GROUP_MIN_SIZE" {
-  default = 2
+  default = 1
 }
 
 variable "AUTOSCALING_GROUP_MAX_SIZE" {
