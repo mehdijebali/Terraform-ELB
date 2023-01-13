@@ -5,7 +5,7 @@ resource "aws_launch_template" "tf-launchtemplate" {
   instance_type = var.INSTANCE_TYPE
   key_name = aws_key_pair.tf-ssh-key.key_name
   vpc_security_group_ids = [aws_security_group.instance-securitygroup.id]
-  user_data = file("configurenginx.sh")
+  user_data = filebase64("configurenginx.sh")
 }
 
 #Generate Key
