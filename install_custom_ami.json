@@ -12,16 +12,6 @@
             "source_ami_filter": {
                 "filters": {
                     "virtualization-type": "hvm",
-<<<<<<< HEAD
-                    "name": "amzn2-ami-hvm-2.0.*-gp2",
-                    "root-device-type": "ebs"
-                },
-                "owners": ["amazon"],
-                "most_recent": true
-            },
-            "instance_type": "t2.micro",
-            "ssh_username": "ec2-user",
-=======
                     "name": "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*",
                     "root-device-type": "ebs"
                 },
@@ -32,7 +22,6 @@
             },
             "instance_type": "t2.micro",
             "ssh_username": "ubuntu",
->>>>>>> packer_ubuntu
             "ami_name": "custom-configuration-{{timestamp}}"
         }
     ],
