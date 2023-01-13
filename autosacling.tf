@@ -1,14 +1,11 @@
-#AutoScaling Launch Configuration
-resource "aws_launch_configuration" "tf-launchconfig" {
-  name_prefix     = var.LAUNCH_CONFIGURATION_NAME
-  image_id        = data.aws_ami.packer_ami.id
-  instance_type   = var.INSTANCE_TYPE
-  key_name        = aws_key_pair.tf-ssh-key.key_name
-  security_groups = [aws_security_group.instance-securitygroup.id]
+#AutoScaling Launch Template
+resource "aws_launch_template" "tf-launchtemplate" {
+  name = var.LAUNCH_TEMPLATE_NAME
+  image_id = data.aws_ami.packer_ami.id
+  instance_type = var.INSTANCE_TYPE
+  key_name = aws_key_pair.tf-ssh-key.key_name
+  vpc_security_group_ids = [aws_security_group.allow-levelup-ssh.id]
   user_data = file("configurenginx.sh")
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 #Generate Key
