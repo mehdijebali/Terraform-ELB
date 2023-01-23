@@ -3,7 +3,7 @@ resource "aws_security_group" "elb-securitygroup" {
   vpc_id      = module.network.vpc_id
   name        = var.ELB_SG_NAME
   description = var.ELB_SG_DESCRIPTION
-  
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -28,7 +28,7 @@ resource "aws_security_group" "instance-securitygroup" {
   vpc_id      = module.network.vpc_id
   name        = var.INSTANCE_SG_NAME
   description = var.INSTANCE_SG_DESCRIPTION
-  
+
   egress {
     from_port   = 0
     to_port     = 0

@@ -1,5 +1,5 @@
 variable "AWS_REGION" {
-default = "us-east-1"
+  default = "us-east-1"
 }
 
 variable "AMI_ID" {
@@ -83,16 +83,16 @@ variable "PUBLIC_RT_NAME" {
 }
 
 variable "AVAILABILITY_ZONES" {
-   type = list
-   default = ["us-east-1a", "us-east-1b"]
+  type    = list(any)
+  default = ["us-east-1a", "us-east-1b"]
 }
 
 variable "SUBNET_NAMES" {
-   type = list
-   default = ["public-subnet-A", "public-subnet-B", "private-subnet-A", "private-subnet-B"]
+  type    = list(any)
+  default = ["public-subnet-A", "public-subnet-B", "private-subnet-A", "private-subnet-B"]
 }
 
 variable "SUBNET_IPS" {
-   type = list
-   default = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24", "10.0.4.0/24"]
+  type    = list(any)
+  default = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24", "10.0.4.0/24"]
 }
