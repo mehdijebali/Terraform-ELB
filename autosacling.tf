@@ -6,6 +6,7 @@ resource "aws_launch_configuration" "tf-launchconfig" {
   key_name        = aws_key_pair.tf-ssh-key.key_name
   security_groups = [aws_security_group.instance-securitygroup.id]
   user_data = file("configurenginx.sh")
+  update_default_version = true
   lifecycle {
     create_before_destroy = true
   }
