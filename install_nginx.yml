@@ -13,6 +13,12 @@
       name: net-tools
       state: present
   
+  - name: Check nginx version 
+    command: sudo nginx -v
+    register: nginx_version
+  - debug:
+      var: nginx_version.stderr
+  
 
 
 
