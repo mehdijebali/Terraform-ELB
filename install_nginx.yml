@@ -24,6 +24,12 @@
 
   - name: Install nginx
     shell: amazon-linux-extras install nginx1.12=latest -y
+
+  - name: Check nginx version 
+    command: sudo nginx -v
+    register: nginx_version
+  - debug:
+      var: nginx_version.stderr
   
   - name: Install Network tools
     yum:
