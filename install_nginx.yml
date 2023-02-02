@@ -3,24 +3,50 @@
   become: true
   
   tasks:
+  - name: Update all packages
+    yum:
+      name: '*'
+      state: latest
+      update_only: yes
+  
+  - name: Ensure a list of yum packages are installed
+    yum:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    vars:
+      packages:
+      - yum-utils
+      - amazon-linux-extras
+  
+  - name: Add extras repository
+    shell: yum-config-manager --enable extras
+
   - name: Install nginx
-    apt:
-      name: nginx
-      state: present
-  
-  - name: Install network tools
-    apt:
-      name: net-tools
-      state: present
-  
+    shell: amazon-linux-extras install nginx1.12=latest -y
+    notify:
+      - Enable Nginx service at startup
+
   - name: Check nginx version 
     command: sudo nginx -v
     register: nginx_version
   - debug:
       var: nginx_version.stderr
   
+  - name: Install Network tools
+    yum:
+      name: net-tools.x86_64
+      state: latest
+      update_cache: yes
   - name: Check nginx service status
     service_facts:
     register: services_state
   - debug:
       var: services_state.ansible_facts.services['nginx.service']
+  
+  handlers:
+  - name: Enable Nginx service at startup
+    service:
+      name: nginx
+      state: started
+      enabled: yes
