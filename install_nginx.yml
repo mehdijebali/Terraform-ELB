@@ -24,6 +24,8 @@
 
   - name: Install nginx
     shell: amazon-linux-extras install nginx1.12=latest -y
+    notify:
+      - Enable Nginx service at startup
 
   - name: Check nginx version 
     command: sudo nginx -v
@@ -37,14 +39,15 @@
       state: latest
       update_cache: yes
       
-  - name: Enable Nginx service at startup
-    service:
-      name: nginx
-      state: started
-      enabled: yes
-  
   - name: Check nginx service status
     service_facts:
     register: services_state
   - debug:
       var: services_state.ansible_facts.services['nginx.service']
+  
+  handlers:
+  - name: Enable Nginx service at startup
+    service:
+      name: nginx
+      state: started
+      enabled: yes
