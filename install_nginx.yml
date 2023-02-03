@@ -50,3 +50,4 @@
       name: nginx
       state: started
       enabled: yes
+    when: nginx_version.changed == true
