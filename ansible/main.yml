@@ -1,15 +1,19 @@
 ---
 - hosts: all
   become: true
+
+  vars:
+    linux_distribution: centos
   
   tasks:
-  - name: Update all packages
+  - name: Update all packages (centos)
     yum:
       name: '*'
       state: latest
       update_only: yes
+    when: linux_distribution == "centos"
   
-  - name: Ensure a list of yum packages are installed
+  - name: Ensure a list of yum packages are installed (centos)
     yum:
       name: "{{ packages }}"
       state: latest
@@ -18,26 +22,51 @@
       packages:
       - yum-utils
       - amazon-linux-extras
+    when: linux_distribution == "centos"
   
-  - name: Add extras repository
+  - name: Add extras repository (centos)
     shell: yum-config-manager --enable extras
+    when: linux_distribution == "centos"
 
-  - name: Install nginx
+  - name: Install nginx (centos)
     shell: amazon-linux-extras install nginx1.12=latest -y
+    when: linux_distribution == "centos"
     notify:
       - Enable Nginx service at startup
-
+  
+  - name: Install Network tools (centos)
+    yum:
+      name: net-tools.x86_64
+      state: latest
+      update_cache: yes
+    when: linux_distribution == "centos"
+      
+  - name: Install nginx (ubuntu)
+    apt:
+      name: nginx
+      state: present
+    when: linux_distribution == "ubuntu"
+  
+  - name: Install network tools (ubuntu)
+    apt:
+      name: net-tools
+      state: present
+    when: linux_distribution == "ubuntu"
+  
   - name: Check nginx version 
     command: sudo nginx -v
     register: nginx_version
   - debug:
       var: nginx_version.stderr
   
+<<<<<<< HEAD:install_nginx.yml
   - name: Install Network tools
     yum:
       name: net-tools.x86_64
       state: latest
       update_cache: yes
+=======
+>>>>>>> packer_ansible_linux2:ansible/main.yml
   - name: Check nginx service status
     service_facts:
     register: services_state
