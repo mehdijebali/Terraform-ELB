@@ -34,7 +34,7 @@
         },
         {
             "type": "ansible",
-            "playbook_file": "./ansible/main.yml"
+            "playbook_file": "./install_nginx.yml"
             }
     ]
 }

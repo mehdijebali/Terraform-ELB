@@ -59,14 +59,6 @@
   - debug:
       var: nginx_version.stderr
   
-<<<<<<< HEAD:install_nginx.yml
-  - name: Install Network tools
-    yum:
-      name: net-tools.x86_64
-      state: latest
-      update_cache: yes
-=======
->>>>>>> packer_ansible_linux2:ansible/main.yml
   - name: Check nginx service status
     service_facts:
     register: services_state
