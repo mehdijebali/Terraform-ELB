@@ -1,6 +1,9 @@
 ---
 - hosts: all
   become: true
+
+  vars:
+    linux_distribution: ubuntu
   
   tasks:
   - name: Update all packages (centos)
@@ -8,6 +11,7 @@
       name: '*'
       state: latest
       update_only: yes
+    when: linux_distribution == "centos"
   
   - name: Ensure a list of yum packages are installed (centos)
     yum:
@@ -18,27 +22,43 @@
       packages:
       - yum-utils
       - amazon-linux-extras
+    when: linux_distribution == "centos"
   
   - name: Add extras repository (centos)
     shell: yum-config-manager --enable extras
+    when: linux_distribution == "centos"
 
   - name: Install nginx (centos)
     shell: amazon-linux-extras install nginx1.12=latest -y
+    when: linux_distribution == "centos"
     notify:
       - Enable Nginx service at startup
-
-  - name: Check nginx version 
-    command: sudo nginx -v
-    register: nginx_version
-  - debug:
-      var: nginx_version.stderr
   
   - name: Install Network tools (centos)
     yum:
       name: net-tools.x86_64
       state: latest
       update_cache: yes
+    when: linux_distribution == "centos"
       
+  - name: Install nginx (ubuntu)
+    apt:
+      name: nginx
+      state: present
+    when: linux_distribution == "ubuntu"
+  
+  - name: Install network tools (ubuntu)
+    apt:
+      name: net-tools
+      state: present
+    when: linux_distribution == "ubuntu"
+  
+  - name: Check nginx version 
+    command: sudo nginx -v
+    register: nginx_version
+  - debug:
+      var: nginx_version.stderr
+  
   - name: Check nginx service status
     service_facts:
     register: services_state
