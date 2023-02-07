@@ -3,13 +3,13 @@
   become: true
   
   tasks:
-  - name: Update all packages
+  - name: Update all packages (centos)
     yum:
       name: '*'
       state: latest
       update_only: yes
   
-  - name: Ensure a list of yum packages are installed
+  - name: Ensure a list of yum packages are installed (centos)
     yum:
       name: "{{ packages }}"
       state: latest
@@ -19,10 +19,10 @@
       - yum-utils
       - amazon-linux-extras
   
-  - name: Add extras repository
+  - name: Add extras repository (centos)
     shell: yum-config-manager --enable extras
 
-  - name: Install nginx
+  - name: Install nginx (centos)
     shell: amazon-linux-extras install nginx1.12=latest -y
     notify:
       - Enable Nginx service at startup
@@ -33,7 +33,7 @@
   - debug:
       var: nginx_version.stderr
   
-  - name: Install Network tools
+  - name: Install Network tools (centos)
     yum:
       name: net-tools.x86_64
       state: latest
