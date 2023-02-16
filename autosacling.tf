@@ -6,7 +6,7 @@ resource "aws_launch_template" "tf-launchtemplate" {
   instance_type          = var.INSTANCE_TYPE
   key_name               = aws_key_pair.tf-ssh-key.key_name
   vpc_security_group_ids = [aws_security_group.instance-securitygroup.id]
-  user_data              = filebase64("configurenginx.sh")
+  user_data              = var.LD_NAME == "centos" ? filebase64("./config/configurenginx_centos.sh") : filebase64("./config/configurenginx_ubuntu.sh")
   update_default_version = true
 }
 
