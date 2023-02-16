@@ -18,8 +18,8 @@ variable "INSTANCE_TYPE" {
   default = "t2.micro"
 }
 
-variable "LAUNCH_CONFIGURATION_NAME" {
-  default = "tf-launchconfig"
+variable "LAUNCH_TEMPLATE_NAME" {
+  default = "tf-launchtemplate"
 }
 
 variable "KEY_NAME" {
