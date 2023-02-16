@@ -20,14 +20,15 @@ resource "aws_key_pair" "tf-ssh-key" {
 resource "aws_autoscaling_group" "levelup-autoscaling" {
   name                      = var.AUTOSCALING_GROUP_NAME
   vpc_zone_identifier       = [module.network.public_subnet_A_id, module.network.public_subnet_B_id]
-  launch_configuration      = aws_launch_configuration.tf-launchconfig.name
   min_size                  = var.AUTOSCALING_GROUP_MIN_SIZE
   max_size                  = var.AUTOSCALING_GROUP_MAX_SIZE
   health_check_grace_period = var.HEALTH_CHECK_GRACE_PERIOD
   health_check_type         = var.HEALTH_CHECK_TYPE
   load_balancers            = [aws_elb.tf-elb.name]
   force_delete              = true
-
+  launch_template {
+    id = aws_launch_template.tf-launchtemplate.id
+  }
   tag {
     key                 = "Name"
     value               = "EC2 instance via LB Autoscaling"
