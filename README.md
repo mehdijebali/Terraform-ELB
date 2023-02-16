@@ -1,6 +1,7 @@
 # Provision AWS ELB with Terraform
 In this Lab, we will apply an Elastic Load balancer that distributes the traffic accross two instances regarding the following diagram:
 ![](./Lab_Results/ELB.png) 
+We will launch Template based on custom AMI created by **Packer** and configured by **Ansible**.
 ## About ELB 
 Elastic Load Balancing automatically distributes your incoming application traffic across all the EC2 instances that you are running. Elastic Load Balancing helps to manage incoming requests by optimally routing traffic so that no one instance is overwhelmed.
 
@@ -24,15 +25,23 @@ export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
 export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 export AWS_DEFAULT_REGION=us-west-2
 ```
-4. In the project root directory, initiate Terraform in order to install the declared provider in `provider.tf` file
+4. Validate Packer configuration file syntax
+```
+packer validate install_custom_ami.json
+```
+5. Once the validation is succeeded, you can build the custom image
+```
+packer build install_custom_ami.json
+```
+6. In the project root directory, initiate Terraform in order to install the declared provider in `main.tf` file
 ```
 terraform init
 ```
-5. If you want to see your provisionning details, run the following command
+7. If you want to see your provisionning details, run the following command
 ```
 terraform plan
 ```
-6. Apply modifications
+8. Apply modifications
 ```
 terraform apply
 ```
