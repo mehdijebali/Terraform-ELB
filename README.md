@@ -11,6 +11,9 @@ When you use Elastic Load Balancing with your Auto Scaling group, it's not neces
 
 After attaching a load balancer to your Auto Scaling group, you can configure your Auto Scaling group to use Elastic Load Balancing metrics (such as the Application Load Balancer request count per target) to scale the number of instances in the group as demand fluctuates.
 ## Instructions
+<details>
+  <summary>Centos</summary>
+
 1. Clone the project 
 ```
 git clone https://github.com/mehdijebali/Terraform-ELB.git
@@ -27,11 +30,11 @@ export AWS_DEFAULT_REGION=us-west-2
 ```
 4. Validate Packer configuration file syntax
 ```
-packer validate install_custom_ami.json
+packer validate ./packer/centos/install_custom_ami.json
 ```
 5. Once the validation is succeeded, you can build the custom image
 ```
-packer build install_custom_ami.json
+packer build ./packer/centos/install_custom_ami.json
 ```
 6. In the project root directory, initiate Terraform in order to install the declared provider in `main.tf` file
 ```
@@ -45,6 +48,46 @@ terraform plan
 ```
 terraform apply
 ```
+</details>
+<details>
+  <summary>Ubuntu</summary>
+
+1. Clone the project 
+```
+git clone https://github.com/mehdijebali/Terraform-ELB.git
+```
+2. In the project root directory, create an SSH key and name it **levelup_key**
+```
+ssh-keygen
+``` 
+3. Export your AWS Credentials
+```
+export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+export AWS_DEFAULT_REGION=us-west-2
+```
+4. Validate Packer configuration file syntax
+```
+packer validate ./packer/ubuntu/install_custom_ami.json
+```
+5. Once the validation is succeeded, you can build the custom image
+```
+packer build ./packer/ubuntu/install_custom_ami.json
+```
+6. In the project root directory, initiate Terraform in order to install the declared provider in `main.tf` file
+```
+terraform init
+```
+7. If you want to see your provisionning details, run the following command
+```
+terraform plan
+```
+8. Apply modifications
+```
+terraform apply
+```
+</details>
+
 ## Expected Results
 Once the provisionning is done, we can verify the AWS ELB implementation frome the console
 #### Launch Configuration
