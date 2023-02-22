@@ -13,7 +13,7 @@ data "amazon-ami" "ubuntu" {
 
 source "amazon-ebs" "ubuntu" {
   access_key    = "${var.aws_access_key}"
-  ami_name      = "ubuntu-template-pkr-${local.timestamp}"
+  ami_name      = "ubuntu-template-pkr-${formatdate("YYYY-MM-DD-hhmmss", timestamp())}"
   instance_type = "t2.micro"
   region        = "us-east-1"
   secret_key    = "${var.aws_secret_key}"
