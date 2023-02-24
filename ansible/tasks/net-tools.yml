@@ -1,0 +1,13 @@
+---
+- name: Install Network tools (centos)
+  yum:
+    name: net-tools.x86_64
+    state: latest
+    update_cache: yes
+  when: linux_distribution == "centos"
+
+- name: Install network tools (ubuntu)
+  apt:
+    name: net-tools
+    state: present
+  when: linux_distribution == "ubuntu"
