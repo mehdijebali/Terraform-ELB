@@ -1,5 +1,5 @@
 ---
-linux_distribution: ubuntu
+linux_distribution: centos
 packages:
   - yum-utils
   - amazon-linux-extras
