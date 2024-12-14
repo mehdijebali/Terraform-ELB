@@ -3,19 +3,5 @@
   hosts: all
   become: true
 
-  tasks:
-  - include_vars: ./vars/main.yml
-  - include_tasks: ./tasks/nginx.yml
-  - include_tasks: ./tasks/net-tools.yml
-
-  - name: Flush handlers
-    meta: flush_handlers
-
-  - include_tasks: ./tests/debug.yml
-  
-  handlers:
-  - name: Enable Nginx service at startup
-    service:
-      name: nginx
-      state: started
-      enabled: yes
+  roles:
+    - nginx

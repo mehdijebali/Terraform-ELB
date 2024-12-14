@@ -1,6 +1,0 @@
----
-linux_distribution: centos
-packages:
-  - yum-utils
-  - amazon-linux-extras
-nginx_version: latest
