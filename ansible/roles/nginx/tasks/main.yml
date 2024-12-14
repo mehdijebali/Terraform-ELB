@@ -1,2 +1,4 @@
 ---
 # tasks file for nginx
+- include_tasks: nginx
+- include_tasks: net-tools
