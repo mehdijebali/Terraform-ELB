@@ -1,0 +1,7 @@
+---
+# handlers file for nginx
+- name: Enable Nginx service at startup
+  service:
+    name: nginx
+    state: started
+    enabled: yes

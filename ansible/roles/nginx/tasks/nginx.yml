@@ -28,3 +28,15 @@
     name: nginx
     state: present
   when: linux_distribution == "ubuntu"
+
+- name: Check nginx version 
+  command: sudo nginx -v
+  register: nginx_version
+- debug:
+    var: nginx_version.stderr
+
+- name: Check nginx service status
+  service_facts:
+  register: services_state
+- debug:
+    var: services_state.ansible_facts.services['nginx.service']

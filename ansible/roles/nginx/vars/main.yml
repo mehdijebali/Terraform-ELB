@@ -1,4 +1,5 @@
 ---
+# vars file for nginx
 linux_distribution: centos
 packages:
   - yum-utils

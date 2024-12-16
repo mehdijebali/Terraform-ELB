@@ -1,0 +1,4 @@
+---
+# tasks file for nginx
+- include_tasks: nginx.yml
+- include_tasks: net-tools.yml
