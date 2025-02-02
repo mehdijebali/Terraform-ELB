@@ -1,4 +1,3 @@
-
 #AutoScaling Launch Template
 resource "aws_launch_template" "tf-launchtemplate" {
   name                   = var.LAUNCH_TEMPLATE_NAME
