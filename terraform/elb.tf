@@ -23,8 +23,6 @@ resource "aws_elb" "tf-elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = {
-    Name = var.ELB_NAME
-  }
+  tags = local.elb-tags
 }
 
