@@ -1,7 +1,7 @@
 #Security group for AWS ELB
 resource "aws_security_group" "elb-securitygroup" {
   vpc_id      = module.network.vpc_id
-  name        = var.ELB_SG_NAME
+  name        = local.ELB_SG_NAME
   description = var.ELB_SG_DESCRIPTION
 
   egress {
@@ -18,15 +18,13 @@ resource "aws_security_group" "elb-securitygroup" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "${var.ELB_SG_NAME}"
-  }
+  tags = local.elb-sg-tags
 }
 
 #Security group for the Instances
 resource "aws_security_group" "instance-securitygroup" {
   vpc_id      = module.network.vpc_id
-  name        = var.INSTANCE_SG_NAME
+  name        = local.INSTANCE_SG_NAME
   description = var.INSTANCE_SG_DESCRIPTION
 
   egress {
@@ -50,7 +48,5 @@ resource "aws_security_group" "instance-securitygroup" {
     security_groups = [aws_security_group.elb-securitygroup.id]
   }
 
-  tags = {
-    Name = "${var.INSTANCE_SG_NAME}"
-  }
+  tags = local.sg-tags
 }

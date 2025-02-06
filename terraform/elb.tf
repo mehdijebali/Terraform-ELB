@@ -1,6 +1,6 @@
 #AWS ELB Configuration
 resource "aws_elb" "tf-elb" {
-  name            = var.ELB_NAME
+  name            = local.ELB_NAME
   subnets         = [module.network.public_subnet_A_id, module.network.public_subnet_B_id]
   security_groups = [aws_security_group.elb-securitygroup.id]
 
