@@ -1,7 +1,10 @@
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
 
 ## Providers
 
@@ -31,25 +34,20 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_AMI_ID"></a> [AMI\_ID](#input\_AMI\_ID) | n/a | `string` | `"ami-09d3b3274b6c5d4aa"` | no |
 | <a name="input_AUTOSCALING_GROUP_MAX_SIZE"></a> [AUTOSCALING\_GROUP\_MAX\_SIZE](#input\_AUTOSCALING\_GROUP\_MAX\_SIZE) | n/a | `number` | `2` | no |
 | <a name="input_AUTOSCALING_GROUP_MIN_SIZE"></a> [AUTOSCALING\_GROUP\_MIN\_SIZE](#input\_AUTOSCALING\_GROUP\_MIN\_SIZE) | n/a | `number` | `2` | no |
 | <a name="input_AUTOSCALING_GROUP_NAME"></a> [AUTOSCALING\_GROUP\_NAME](#input\_AUTOSCALING\_GROUP\_NAME) | n/a | `string` | `"tf-autoscaling"` | no |
 | <a name="input_AVAILABILITY_ZONES"></a> [AVAILABILITY\_ZONES](#input\_AVAILABILITY\_ZONES) | n/a | `list(any)` | <pre>[<br/>  "us-east-1a",<br/>  "us-east-1b"<br/>]</pre> | no |
 | <a name="input_AWS_REGION"></a> [AWS\_REGION](#input\_AWS\_REGION) | n/a | `string` | `"us-east-1"` | no |
-| <a name="input_ELB_NAME"></a> [ELB\_NAME](#input\_ELB\_NAME) | n/a | `string` | `"tf-elb"` | no |
 | <a name="input_ELB_SG_DESCRIPTION"></a> [ELB\_SG\_DESCRIPTION](#input\_ELB\_SG\_DESCRIPTION) | n/a | `string` | `"security group for Elastic Load Balancer"` | no |
-| <a name="input_ELB_SG_NAME"></a> [ELB\_SG\_NAME](#input\_ELB\_SG\_NAME) | n/a | `string` | `"elb-sg"` | no |
 | <a name="input_GW_NAME"></a> [GW\_NAME](#input\_GW\_NAME) | n/a | `string` | `"demo-gw"` | no |
 | <a name="input_HEALTH_CHECK_GRACE_PERIOD"></a> [HEALTH\_CHECK\_GRACE\_PERIOD](#input\_HEALTH\_CHECK\_GRACE\_PERIOD) | n/a | `number` | `200` | no |
 | <a name="input_HEALTH_CHECK_TYPE"></a> [HEALTH\_CHECK\_TYPE](#input\_HEALTH\_CHECK\_TYPE) | n/a | `string` | `"ELB"` | no |
 | <a name="input_INSTANCE_SG_DESCRIPTION"></a> [INSTANCE\_SG\_DESCRIPTION](#input\_INSTANCE\_SG\_DESCRIPTION) | n/a | `string` | `"security group for instances"` | no |
-| <a name="input_INSTANCE_SG_NAME"></a> [INSTANCE\_SG\_NAME](#input\_INSTANCE\_SG\_NAME) | n/a | `string` | `"instance-sg"` | no |
 | <a name="input_INSTANCE_TYPE"></a> [INSTANCE\_TYPE](#input\_INSTANCE\_TYPE) | n/a | `string` | `"t2.micro"` | no |
 | <a name="input_KEY_NAME"></a> [KEY\_NAME](#input\_KEY\_NAME) | n/a | `string` | `"tf-ssh-key"` | no |
 | <a name="input_LAUNCH_TEMPLATE_NAME"></a> [LAUNCH\_TEMPLATE\_NAME](#input\_LAUNCH\_TEMPLATE\_NAME) | n/a | `string` | `"tf-launchtemplate"` | no |
 | <a name="input_LD_NAME"></a> [LD\_NAME](#input\_LD\_NAME) | n/a | `string` | `"centos"` | no |
-| <a name="input_PATH_TO_PRIVATE_KEY"></a> [PATH\_TO\_PRIVATE\_KEY](#input\_PATH\_TO\_PRIVATE\_KEY) | n/a | `string` | `"levelup_key"` | no |
 | <a name="input_PATH_TO_PUBLIC_KEY"></a> [PATH\_TO\_PUBLIC\_KEY](#input\_PATH\_TO\_PUBLIC\_KEY) | n/a | `string` | `"levelup_key.pub"` | no |
 | <a name="input_PUBLIC_RT_NAME"></a> [PUBLIC\_RT\_NAME](#input\_PUBLIC\_RT\_NAME) | n/a | `string` | `"demo-rt"` | no |
 | <a name="input_SUBNET_IPS"></a> [SUBNET\_IPS](#input\_SUBNET\_IPS) | n/a | `list(any)` | <pre>[<br/>  "10.0.1.0/24",<br/>  "10.0.2.0/24",<br/>  "10.0.3.0/24",<br/>  "10.0.4.0/24"<br/>]</pre> | no |

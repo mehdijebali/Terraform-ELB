@@ -30,7 +30,7 @@ resource "aws_autoscaling_group" "levelup-autoscaling" {
   }
   tag {
     key                 = "Name"
-    value               = "EC2 instance via LB Autoscaling"
+    value               = local.ASG_NAME
     propagate_at_launch = true
   }
 }
