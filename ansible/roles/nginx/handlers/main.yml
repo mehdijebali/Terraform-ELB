@@ -1,7 +1,7 @@
 ---
 # handlers file for nginx
 - name: Enable Nginx service at startup
-  service:
+  ansible.builtin.service:
     name: nginx
     state: started
-    enabled: yes
+    enabled: true
