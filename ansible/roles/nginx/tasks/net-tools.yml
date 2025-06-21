@@ -1,13 +1,13 @@
 ---
 - name: Install Network tools (centos)
-  yum:
+  ansible.builtin.yum:
     name: net-tools.x86_64
     state: latest
-    update_cache: yes
+    update_cache: true
   when: linux_distribution == "centos"
 
 - name: Install network tools (ubuntu)
-  apt:
+  ansible.builtin.apt:
     name: net-tools
     state: present
   when: linux_distribution == "ubuntu"
