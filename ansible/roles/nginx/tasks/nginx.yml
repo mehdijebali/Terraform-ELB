@@ -1,33 +1,33 @@
 ---
-- name: Update all packages (centos)
+- name: Update all packages (Amazon)
   ansible.builtin.yum:
     name: '*'
     state: latest
     update_only: true
-  when: linux_distribution == "centos"
+  when: ansible_distribution == "Amazon"
 
-- name: Ensure a list of yum packages are installed (centos)
+- name: Ensure a list of yum packages are installed (Amazon)
   ansible.builtin.yum:
     name: "{{ packages }}"
     state: latest
     update_cache: true
-  when: linux_distribution == "centos"
+  when: ansible_distribution == "Amazon"
 
-- name: Add extras repository (centos)
+- name: Add extras repository (Amazon)
   ansible.builtin.shell: yum-config-manager --enable extras
-  when: linux_distribution == "centos"
+  when: ansible_distribution == "Amazon"
 
-- name: Install nginx (centos)
+- name: Install nginx (Amazon)
   ansible.builtin.shell: amazon-linux-extras install nginx1.12={{nginx_version}} -y
-  when: linux_distribution == "centos"
+  when: ansible_distribution == "Amazon"
   notify:
     - Enable Nginx service at startup
 
-- name: Install nginx (ubuntu)
+- name: Install nginx (Ubuntu)
   ansible.builtin.apt:
     name: nginx
     state: present
-  when: linux_distribution == "ubuntu"
+  when: ansible_distribution == "Ubuntu"
 
 - name: Check nginx version 
   ansible.builtin.command: sudo nginx -v

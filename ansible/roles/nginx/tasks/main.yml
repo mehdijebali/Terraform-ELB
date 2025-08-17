@@ -3,7 +3,7 @@
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 86400
-  when: linux_distribution == "ubuntu"
+  when: ansible_distribution == "Ubuntu"
   
 - ansible.builtin.include_tasks: nginx.yml
 - ansible.builtin.include_tasks: net-tools.yml
