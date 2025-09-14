@@ -1,99 +1,119 @@
 variable "AWS_REGION" {
-  type    = string
-  default = "us-east-1"
+  type        = string
+  description = "The region where resources are deployed"
+  default     = "us-east-1"
 }
 
 variable "PATH_TO_PUBLIC_KEY" {
-  type    = string
-  default = "levelup_key.pub"
+  type        = string
+  description = "Path to SSH public key"
+  default     = "levelup_key.pub"
 }
 
 variable "INSTANCE_TYPE" {
-  type    = string
-  default = "t2.micro"
+  type        = string
+  description = "AWS Instance type"
+  default     = "t2.micro"
 }
 
 variable "LAUNCH_TEMPLATE_NAME" {
-  type    = string
-  default = "tf-launchtemplate"
+  type        = string
+  description = "Launch Template Name"
+  default     = "tf-launchtemplate"
 }
 
 variable "KEY_NAME" {
-  type    = string
-  default = "tf-ssh-key"
+  type        = string
+  description = "SSH key name"
+  default     = "tf-ssh-key"
 }
 
 variable "AUTOSCALING_GROUP_NAME" {
-  type    = string
-  default = "tf-autoscaling"
+  type        = string
+  description = "Auto Scaling Group name"
+  default     = "tf-autoscaling"
 }
 
 variable "AUTOSCALING_GROUP_MIN_SIZE" {
-  type    = number
-  default = 2
+  type        = number
+  description = "Auto-Scaling Minimum EC2 Instances number"
+  default     = 2
 }
 
 variable "AUTOSCALING_GROUP_MAX_SIZE" {
-  type    = number
-  default = 2
+  type        = number
+  description = "Auto-Scaling Maximum EC2 Instances number"
+  default     = 2
 }
 
 variable "HEALTH_CHECK_GRACE_PERIOD" {
-  type    = number
-  default = 200
+  type        = number
+  description = "Health Check Period in seconds"
+  default     = 200
 }
 
 variable "HEALTH_CHECK_TYPE" {
-  type    = string
-  default = "ELB"
+  type        = string
+  description = "Health Check Type"
+  default     = "ELB"
 }
 
 variable "INSTANCE_SG_DESCRIPTION" {
-  type    = string
-  default = "security group for instances"
+  type        = string
+  description = "Instance Security Group Description"
+  default     = "security group for instances"
 }
 
 variable "ELB_SG_DESCRIPTION" {
-  type    = string
-  default = "security group for Elastic Load Balancer"
+  type        = string
+  description = "Load Balancer Security Group Description"
+  default     = "security group for Elastic Load Balancer"
 }
 
 variable "VPC_NAME" {
-  type    = string
-  default = "demo-vpc"
+  type        = string
+  description = "VPC Name"
+  default     = "demo-vpc"
 }
 
 variable "VPC_CIDR_BLOCK" {
-  type    = string
-  default = "10.0.0.0/16"
+  type        = string
+  description = "VPC CIDR Block"
+  default     = "10.0.0.0/16"
 }
 
 variable "GW_NAME" {
-  type    = string
-  default = "demo-gw"
+  type        = string
+  description = "VPC Internet Gatewey name"
+  default     = "demo-gw"
 }
 
 variable "PUBLIC_RT_NAME" {
-  type    = string
-  default = "demo-rt"
+  type        = string
+  description = "Subnet Route table name"
+  default     = "demo-rt"
 }
 
 variable "AVAILABILITY_ZONES" {
-  type    = list(any)
-  default = ["us-east-1a", "us-east-1b"]
+  type        = list(any)
+  description = "List of AZ where instances are deployed"
+  default     = ["us-east-1a", "us-east-1b"]
 }
 
 variable "SUBNET_NAMES" {
-  type    = list(any)
-  default = ["public-subnet-A", "public-subnet-B", "private-subnet-A", "private-subnet-B"]
+  type        = list(any)
+  description = "List of subnets names"
+  default     = ["public-subnet-A", "public-subnet-B", "private-subnet-A", "private-subnet-B"]
 }
 
 variable "SUBNET_IPS" {
-  type    = list(any)
-  default = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24", "10.0.4.0/24"]
+  type        = list(any)
+  description = "List of subnets IPs"
+  default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24", "10.0.4.0/24"]
 }
 
 variable "LD_NAME" {
-  type    = string
-  default = "centos"
+  type        = string
+  description = "Linux Distribution"
+  default     = "centos"
 }
