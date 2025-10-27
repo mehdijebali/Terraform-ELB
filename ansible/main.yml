@@ -1,5 +1,5 @@
 ---
-- name: Deploy nginx 
+- name: Deploy nginx
   hosts: all
   become: true
 

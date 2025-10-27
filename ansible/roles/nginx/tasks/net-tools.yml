@@ -1,8 +1,8 @@
 ---
 - name: Install Network tools (Amazon)
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: net-tools.x86_64
-    state: latest
+    state: present
     update_cache: true
   when: ansible_distribution == "Amazon"
 
