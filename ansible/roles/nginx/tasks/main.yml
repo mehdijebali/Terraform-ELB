@@ -4,6 +4,9 @@
     update_cache: true
     cache_valid_time: 86400
   when: ansible_distribution == "Ubuntu"
-  
-- ansible.builtin.include_tasks: nginx.yml
-- ansible.builtin.include_tasks: net-tools.yml
+
+- name: Install Nginx
+  ansible.builtin.include_tasks: nginx.yml
+
+- name: Install Network Tools
+  ansible.builtin.include_tasks: net-tools.yml

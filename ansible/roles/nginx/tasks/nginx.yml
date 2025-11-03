@@ -1,24 +1,13 @@
 ---
 - name: Update all packages (Amazon)
-  ansible.builtin.yum:
-    name: '*'
-    state: latest
-    update_only: true
-  when: ansible_distribution == "Amazon"
-
-- name: Ensure a list of yum packages are installed (Amazon)
-  ansible.builtin.yum:
-    name: "{{ packages }}"
-    state: latest
+  ansible.builtin.dnf:
     update_cache: true
   when: ansible_distribution == "Amazon"
 
-- name: Add extras repository (Amazon)
-  ansible.builtin.shell: yum-config-manager --enable extras
-  when: ansible_distribution == "Amazon"
-
 - name: Install nginx (Amazon)
-  ansible.builtin.shell: amazon-linux-extras install nginx1.12={{nginx_version}} -y
+  ansible.builtin.dnf:
+    name: nginx
+    state: present
   when: ansible_distribution == "Amazon"
   notify:
     - Enable Nginx service at startup
@@ -29,14 +18,10 @@
     state: present
   when: ansible_distribution == "Ubuntu"
 
-- name: Check nginx version 
-  ansible.builtin.command: sudo nginx -v
-  register: nginx_version
-- ansible.builtin.debug:
-    var: nginx_version.stderr
+- name: Get nginx service status
+  ansible.builtin.service_facts:
+  register: nginx_services_state
 
 - name: Check nginx service status
-  ansible.builtin.service_facts:
-  register: services_state
-- ansible.builtin.debug:
-    var: services_state.ansible_facts.services['nginx.service']
+  ansible.builtin.debug:
+    var: nginx_services_state.ansible_facts.services['nginx.service']

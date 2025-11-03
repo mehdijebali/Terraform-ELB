@@ -1,6 +1,2 @@
 ---
 # vars file for nginx
-packages:
-  - yum-utils
-  - amazon-linux-extras
-nginx_version: latest
