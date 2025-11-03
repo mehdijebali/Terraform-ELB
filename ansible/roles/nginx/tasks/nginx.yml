@@ -4,12 +4,6 @@
     update_cache: true
   when: ansible_distribution == "Amazon"
 
-- name: Ensure a list of yum packages are installed (Amazon)
-  ansible.builtin.dnf:
-    name: "{{ nginx_packages }}"
-    state: present
-  when: ansible_distribution == "Amazon"
-
 - name: Install nginx (Amazon)
   ansible.builtin.dnf:
     name: nginx
