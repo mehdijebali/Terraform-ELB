@@ -3,16 +3,9 @@ resource "aws_launch_template" "tf-launchtemplate" {
   name                   = var.LAUNCH_TEMPLATE_NAME
   image_id               = data.aws_ami.packer_ami.id
   instance_type          = var.INSTANCE_TYPE
-  key_name               = aws_key_pair.tf-ssh-key.key_name
   vpc_security_group_ids = [aws_security_group.instance-securitygroup.id]
   user_data              = var.LD_NAME == "centos" ? filebase64("./config/configurenginx_centos.sh") : filebase64("./config/configurenginx_ubuntu.sh")
   update_default_version = true
-}
-
-#Generate Key
-resource "aws_key_pair" "tf-ssh-key" {
-  key_name   = var.KEY_NAME
-  public_key = file(var.PATH_TO_PUBLIC_KEY)
 }
 
 #Autoscaling Group
