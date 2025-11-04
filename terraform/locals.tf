@@ -3,7 +3,7 @@ locals {
   ASG_NAME         = "EC2 instance via LB Autoscaling"
   INSTANCE_SG_NAME = "instance-sg"
   ELB_SG_NAME      = "elb-sg"
-  ami-name         = var.LD_NAME == "centos" ? "centos-template-pkr-*" : "ubuntu-template-pkr-*"
+  ami-name         = var.LD_NAME == "centos" ? "al2023-template-pkr-*" : "ubuntu-template-pkr-*"
   elb-tags = {
     Name = local.ELB_NAME
   }
@@ -14,7 +14,7 @@ locals {
     Name = local.INSTANCE_SG_NAME
   }
   default-tags = {
-    Stack       = "ELK",
+    Stack       = "ELB",
     Environment = "Production"
   }
 }
