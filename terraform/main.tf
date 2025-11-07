@@ -5,6 +5,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    cloudinit = {
+      source  = "hashicorp/cloudinit"
+      version = "~> 2.3"
+    }
   }
 }
 
@@ -26,7 +30,7 @@ data "aws_ami" "packer_ami" {
 }
 
 module "network" {
-  source = "./modules/network"
+  source = "github.com/mehdijebali/terraform-modules//network?ref=v1.0.1"
 
   VPC_NAME           = var.VPC_NAME
   VPC_CIDR_BLOCK     = var.VPC_CIDR_BLOCK
@@ -35,4 +39,8 @@ module "network" {
   AVAILABILITY_ZONES = var.AVAILABILITY_ZONES
   SUBNET_NAMES       = var.SUBNET_NAMES
   SUBNET_IPS         = var.SUBNET_IPS
+}
+
+module "ssm-role" {
+  source = "github.com/mehdijebali/terraform-modules//ssm-role?ref=v1.0.0"
 }
