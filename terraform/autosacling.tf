@@ -4,8 +4,11 @@ resource "aws_launch_template" "tf-launchtemplate" {
   image_id               = data.aws_ami.packer_ami.id
   instance_type          = var.INSTANCE_TYPE
   vpc_security_group_ids = [aws_security_group.instance-securitygroup.id]
-  user_data              = var.LD_NAME == "centos" ? filebase64("./config/configurenginx_centos.sh") : filebase64("./config/configurenginx_ubuntu.sh")
+  user_data              = data.cloudinit_config.elb_instance_userdata.rendered
   update_default_version = true
+  iam_instance_profile {
+    name = module.ssm-role.instance_profile_name
+  }
 }
 
 #Autoscaling Group

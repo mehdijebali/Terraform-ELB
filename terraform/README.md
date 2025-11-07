@@ -5,18 +5,21 @@
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
+| <a name="requirement_cloudinit"></a> [cloudinit](#requirement\_cloudinit) | ~> 2.3 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 5.100.0 |
+| <a name="provider_cloudinit"></a> [cloudinit](#provider\_cloudinit) | 2.3.7 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_network"></a> [network](#module\_network) | ./modules/network | n/a |
+| <a name="module_network"></a> [network](#module\_network) | github.com/mehdijebali/terraform-modules//network | v1.0.1 |
+| <a name="module_ssm-role"></a> [ssm-role](#module\_ssm-role) | github.com/mehdijebali/terraform-modules//ssm-role | v1.0.0 |
 
 ## Resources
 
@@ -28,6 +31,7 @@
 | [aws_security_group.elb-securitygroup](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group.instance-securitygroup](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_ami.packer_ami](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
+| [cloudinit_config.elb_instance_userdata](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
 
 ## Inputs
 
