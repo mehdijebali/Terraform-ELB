@@ -1,0 +1,261 @@
+# This workflow orchestrates the Continuous Integration and Continuous Delivery (CI/CD)
+# for Terraform, Packer, and Ansible assets using GitHub Actions and Semantic Release.
+
+# NOTE: For optimal control and performance as requested, you should build and host
+# the custom Docker images (Golden Images) defined in the summary section (e.g., in GitHub Container Registry).
+# In this file, we use readily available or setup actions, but you would replace them
+# with 'container: <your-registry>/<your-image-name>:<tag>' in the job definitions for the Golden Image approach.
+
+name: Terraform & Automation CI/CD
+
+# Define triggers for Pull Requests (linting/validation) and Push (planning/applying/releasing)
+on:
+  pull_request:
+    # Trigger on any PR event
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+  push:
+    # Trigger on push to main (for apply and release) and feature branches (for plan and build)
+    branches:
+      - main
+      - 'feat/**'
+      - 'feature/**'
+    tags:
+      # Exclude tags as Semantic Release creates them, preventing infinite loops
+      - '*'
+
+# Define environment variables used throughout the workflow
+env:
+  TF_WORKING_DIR: ./terraform  # Path to your Terraform configuration files
+  PKR_WORKING_DIR: ./packer/centos    # Path to your Packer template files
+  ANSIBLE_WORKING_DIR: ./ansible # Path to your Ansible playbooks/roles
+  AWS_REGION: us-east-1          # Example region, adjust as needed
+
+jobs:
+
+  ###################################################################################
+  # JOB 1: VALIDATION AND LINTING (Runs on Pull Request events)
+  ###################################################################################
+  lint_validate_docs:
+    name: Lint, Validate, & Docs (PR Check)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Set up AWS credentials (required for some Terraform validation)
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    # -------------------------------------------------------------------------------
+    # 1. TERRAFORM CHECKS (Merge Request)
+    # -------------------------------------------------------------------------------
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.13.x
+
+    - name: Terraform Init (Validation prerequisite)
+      id: init_tf
+      run: terraform init -upgrade -backend=false
+      working-directory: ${{ env.TF_WORKING_DIR }}
+      
+    - name: Terraform Format Check (fmt)
+      id: fmt_tf
+      run: terraform fmt -check -recursive
+      working-directory: ${{ env.TF_WORKING_DIR }}
+
+    - name: Terraform Validate
+      id: validate_tf
+      run: terraform validate
+      working-directory: ${{ env.TF_WORKING_DIR }}
+
+    - name: Run TFLint
+      uses: terraform-tool/actions-tflint@v2
+      with:
+        working_directory: ${{ env.TF_WORKING_DIR }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Generate Terraform Docs
+      uses: terraform-docs/gh-actions@v1.1.0
+      with:
+        working-dir: ${{ env.TF_WORKING_DIR }}
+        output-file: README.md
+        output-method: inject
+        
+    # -------------------------------------------------------------------------------
+    # 2. ANSIBLE CHECKS (Merge Request)
+    # -------------------------------------------------------------------------------
+    - name: Run Ansible Lint
+      uses: ansible/ansible-lint@v6 # Use the dedicated action for linting
+      with:
+        path: ${{ env.ANSIBLE_WORKING_DIR }}
+
+    # -------------------------------------------------------------------------------
+    # 3. PACKER CHECKS (Merge Request)
+    # -------------------------------------------------------------------------------
+    - name: Setup Packer
+      uses: hashicorp/setup-packer@v1
+      
+    - name: Packer Init
+      id: init_packer
+      run: packer init .
+      working-directory: ${{ env.PKR_WORKING_DIR }}
+      
+    - name: Packer Validate
+      id: validate_packer
+      run: packer validate .
+      working-directory: ${{ env.PKR_WORKING_DIR }}
+
+  ###################################################################################
+  # JOB 2: PLAN & BUILD (Runs on Feat Branch Push)
+  ###################################################################################
+  plan_build_feat:
+    name: Plan & Build (Feat Branch)
+    runs-on: ubuntu-latest
+    # Only run on push to feature branches and skip if a pull_request event is active
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/feat/')
+    needs: lint_validate_docs
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    # 1. TERRAFORM PLAN
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.13.x
+
+    - name: Terraform Init
+      id: init_tf
+      run: terraform init
+      working-directory: ${{ env.TF_WORKING_DIR }}
+      
+    - name: Terraform Validate
+      id: validate_tf
+      run: terraform validate
+      working-directory: ${{ env.TF_WORKING_DIR }}
+
+    - name: Terraform Plan
+      id: plan_tf
+      run: terraform plan -no-color
+      working-directory: ${{ env.TF_WORKING_DIR }}
+
+    # 2. PACKER BUILD (Image build on feature branch)
+    - name: Setup Packer
+      uses: hashicorp/setup-packer@v1
+
+    - name: Packer Init
+      id: init_packer
+      run: packer init ${{ env.PKR_WORKING_DIR }}
+      
+    - name: Packer Validate - Feature Branch
+      id: build_packer
+      run: packer validate ${{ env.PKR_WORKING_DIR }}
+      working-directory: ${{ env.PKR_WORKING_DIR }}
+
+  ###################################################################################
+  # JOB 3: RELEASE & DEPLOY (Runs on Main Branch Push)
+  ###################################################################################
+  release_deploy_main:
+    name: Release & Deploy (Main Branch)
+    runs-on: ubuntu-latest
+    # Only run on push to main branch
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Needs the validation/linting step to pass before deploying
+    needs: lint_validate_docs
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        # Fetch history for Semantic Release to analyze commits
+        fetch-depth: 0 
+        
+    - name: Set up AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    # -------------------------------------------------------------------------------
+    # 1. SEMANTIC RELEASE
+    # -------------------------------------------------------------------------------
+    - name: Semantic Release
+      id: semantic_release
+      uses: cycjimmy/semantic-release-action@v4
+      env:
+        # This token MUST have the 'repo' scope (or 'contents:write' and 'releases:write' for fine-grained PAT)
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+
+    # -------------------------------------------------------------------------------
+    # 2. TERRAFORM APPLY (Runs only after a successful new release)
+    # -------------------------------------------------------------------------------
+    - name: Setup Terraform
+      if: steps.semantic_release.outputs.new_release_published == 'true'
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.13.x
+
+    - name: Terraform Init & Validate
+      if: steps.semantic_release.outputs.new_release_published == 'true'
+      id: init_validate_tf
+      run: |
+        terraform init
+        terraform validate
+      working-directory: ${{ env.TF_WORKING_DIR }}
+
+    - name: Terraform Plan
+      if: steps.semantic_release.outputs.new_release_published == 'true'
+      id: plan_tf
+      run: terraform plan -out=tfplan
+      working-directory: ${{ env.TF_WORKING_DIR }}
+
+    - name: Terraform Apply
+      if: steps.semantic_release.outputs.new_release_published == 'true'
+      id: apply_tf
+      run: terraform apply -auto-approve tfplan
+      working-directory: ${{ env.TF_WORKING_DIR }}
+      
+    # -------------------------------------------------------------------------------
+    # 3. MANUAL STEPS (Documentation of required manual interactions)
+    # -------------------------------------------------------------------------------
+    - name: Manual Deployment/Cleanup Instructions
+      run: |
+        echo "Terraform Apply was completed if a new release was published."
+        echo "MANUAL STEP: Terraform Destroy is required to be run manually for cleanup."
+        echo "MANUAL STEP: Ansible Deploy can be triggered manually against the deployed infrastructure."
+        echo "MANUAL STEP: Packer Build for the final Golden Image in main can be triggered or integrated as a final step."
+
+    # -------------------------------------------------------------------------------
+    # 4. PACKER BUILD (Image build on main branch for final golden image)
+    # -------------------------------------------------------------------------------
+    # You might want to run this conditionally or separately, but placing it here
+    # ensures the latest code is used to build the final image.
+    - name: Setup Packer
+      uses: hashicorp/setup-packer@v1
+
+    - name: Packer Init
+      id: init_packer
+      run: packer init .
+      working-directory: ${{ env.PKR_WORKING_DIR }}
+      
+    - name: Packer Build - Main Branch (Final Image)
+      id: build_packer_main
+      run: packer build -var "source_branch=main" .
+      working-directory: ${{ env.PKR_WORKING_DIR }}
