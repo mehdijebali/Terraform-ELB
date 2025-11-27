@@ -44,10 +44,10 @@ jobs:
     
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       
     - name: Set up AWS credentials (required for some Terraform validation)
-      uses: aws-actions/configure-aws-credentials@v4
+      uses: aws-actions/configure-aws-credentials@v5
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -77,13 +77,13 @@ jobs:
       working-directory: ${{ env.TF_WORKING_DIR }}
 
     - name: Run TFLint
-      uses: terraform-tool/actions-tflint@v2
+      uses: terraform-linters/setup-tflint@v6
       with:
         working_directory: ${{ env.TF_WORKING_DIR }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Generate Terraform Docs
-      uses: terraform-docs/gh-actions@v1.1.0
+      uses: terraform-docs/gh-actions@v1
       with:
         working-dir: ${{ env.TF_WORKING_DIR }}
         output-file: README.md
@@ -93,7 +93,7 @@ jobs:
     # 2. ANSIBLE CHECKS (Merge Request)
     # -------------------------------------------------------------------------------
     - name: Run Ansible Lint
-      uses: ansible/ansible-lint@v6 # Use the dedicated action for linting
+      uses: ansible/ansible-lint@v25 # Use the dedicated action for linting
       with:
         path: ${{ env.ANSIBLE_WORKING_DIR }}
 
@@ -101,7 +101,7 @@ jobs:
     # 3. PACKER CHECKS (Merge Request)
     # -------------------------------------------------------------------------------
     - name: Setup Packer
-      uses: hashicorp/setup-packer@v1
+      uses: hashicorp/setup-packer@v3
       
     - name: Packer Init
       id: init_packer
@@ -157,7 +157,7 @@ jobs:
 
     # 2. PACKER BUILD (Image build on feature branch)
     - name: Setup Packer
-      uses: hashicorp/setup-packer@v1
+      uses: hashicorp/setup-packer@v3
 
     - name: Packer Init
       id: init_packer
@@ -247,7 +247,7 @@ jobs:
     # You might want to run this conditionally or separately, but placing it here
     # ensures the latest code is used to build the final image.
     - name: Setup Packer
-      uses: hashicorp/setup-packer@v1
+      uses: hashicorp/setup-packer@v3
 
     - name: Packer Init
       id: init_packer
