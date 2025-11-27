@@ -80,7 +80,6 @@ jobs:
       uses: terraform-linters/setup-tflint@v6
       with:
         working_directory: ${{ env.TF_WORKING_DIR }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Generate Terraform Docs
       uses: terraform-docs/gh-actions@v1
@@ -95,7 +94,7 @@ jobs:
     - name: Run Ansible Lint
       uses: ansible/ansible-lint@v25 # Use the dedicated action for linting
       with:
-        path: ${{ env.ANSIBLE_WORKING_DIR }}
+        working_directory: ${{ env.ANSIBLE_WORKING_DIR }}
 
     # -------------------------------------------------------------------------------
     # 3. PACKER CHECKS (Merge Request)
