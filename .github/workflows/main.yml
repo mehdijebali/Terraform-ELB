@@ -40,7 +40,7 @@ jobs:
   lint_validate_docs:
     name: Lint, Validate, & Docs (PR Check)
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
     
     steps:
     - name: Checkout Code
@@ -121,6 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     # Only run on push to feature branches and skip if a pull_request event is active
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/feat/')
+    needs: lint_validate_docs
 
     steps:
     - name: Checkout Code
@@ -175,6 +176,7 @@ jobs:
     runs-on: ubuntu-latest
     # Only run on push to main branch
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: lint_validate_docs
 
     steps:
     - name: Checkout Code
