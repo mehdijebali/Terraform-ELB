@@ -177,7 +177,7 @@ jobs:
     # Only run on push to main branch
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     # Needs the validation/linting step to pass before deploying
-    needs: lint_validate_docs
+    needs: plan_build_feat
 
     steps:
     - name: Checkout Code
