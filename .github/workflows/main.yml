@@ -110,7 +110,6 @@ jobs:
     - name: Packer Validate
       id: validate_packer
       run: packer validate .
-      working-directory: ${{ env.PKR_WORKING_DIR }}
 
   ###################################################################################
   # JOB 2: PLAN & BUILD (Runs on Feat Branch Push)
