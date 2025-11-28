@@ -165,7 +165,6 @@ jobs:
     - name: Packer Validate - Feature Branch
       id: build_packer
       run: packer validate ${{ env.PKR_WORKING_DIR }}
-      working-directory: ${{ env.PKR_WORKING_DIR }}
 
   ###################################################################################
   # JOB 3: RELEASE & DEPLOY (Runs on Main Branch Push)
