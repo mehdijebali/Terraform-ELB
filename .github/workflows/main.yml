@@ -144,6 +144,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' &&  github.ref == 'refs/heads/main'
     needs: lint_validate_docs
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
 
     steps:
     - name: Checkout Code
@@ -164,20 +167,17 @@ jobs:
     - name: Terraform Init
       id: init_tf
       run: terraform init
-      working-directory: ${{ env.TF_WORKING_DIR }}
     
     - name: Terraform Apply
       if: steps.semantic_release.outputs.new_release_published == 'true'
       id: apply_tf
       run: terraform apply -auto-approve
-      working-directory: ${{ env.TF_WORKING_DIR }}
     
     - name: Upload state
       uses: actions/upload-artifact@v4
       with:
         name: tfstate
         path: terraform.tfstate
-      working-directory: ${{ env.TF_WORKING_DIR }}
 
   ###################################################################################
   # JOB 4: TERRAFORM DESTROY (Runs MANUALLY)
@@ -187,6 +187,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' &&  github.ref == 'refs/heads/main'
     needs: terraform_apply
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
 
     steps:
     - name: Checkout Code
@@ -208,17 +211,14 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: tfstate
-      working-directory: ${{ env.TF_WORKING_DIR }}
 
     - name: Terraform Init
       id: init_tf
       run: terraform init
-      working-directory: ${{ env.TF_WORKING_DIR }}
     
     - name: Terraform Destroy
       id: destroy_tf
       run: terraform destroy -auto-approve
-      working-directory: ${{ env.TF_WORKING_DIR }}
  
     
   ###################################################################################
