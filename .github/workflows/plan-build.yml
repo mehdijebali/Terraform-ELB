@@ -54,12 +54,12 @@ jobs:
       working-directory: ${{ env.TF_WORKING_DIR }}
       
   ###################################################################################
-  # JOB 2: PACKER BUILD 
+  # JOB 2: PACKER BUILD
   ###################################################################################
   packer_build:
     name: Packer Build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/feat' || github.ref == 'refs/heads/main'
+    if: github.event_name == 'push'
 
     steps:
     - name: Setup Packer
