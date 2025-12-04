@@ -14,7 +14,6 @@ on:
 env:
   TF_WORKING_DIR: ./terraform  # Path to Terraform configuration files
   PKR_WORKING_DIR: ./packer/centos    # Path to Packer template files
-  ANSIBLE_WORKING_DIR: ./ansible # Path to Ansible playbooks/roles
   AWS_REGION: us-east-1          # Default AWS region
 
 jobs:
@@ -67,8 +66,7 @@ jobs:
 
     - name: Packer Init
       id: init_packer
-      run: find . -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer init "{}"
-      working-directory: ${{ env.PKR_WORKING_DIR }}
+      run: find ${{ env.PKR_WORKING_DIR }} -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer init "{}"
       
     - name: Packer build - Feature Branch
       id: build_packer
