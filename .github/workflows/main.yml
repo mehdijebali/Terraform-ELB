@@ -2,17 +2,17 @@
 # for Terraform and Packer using GitHub Actions and Semantic Release.
 name: Terraform & Automation CI/CD
 on:
-  pull_request:
-    branches:
-      - main
-    types: [opened, synchronize, reopened]
-  push:
-    branches:
-      - main
-      - 'feat/**'
-      - 'feature/**'
-    tags:
-      - '*'
+#  pull_request:
+#    branches:
+#      - main
+#    types: [opened, synchronize, reopened]
+#  push:
+#    branches:
+#      - main
+#      - 'feat/**'
+#      - 'feature/**'
+#    tags:
+#      - '*'
   workflow_dispatch:
 
 # Define environment variables used throughout the workflow
