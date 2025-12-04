@@ -104,12 +104,13 @@ jobs:
       
     - name: Packer Init
       id: init_packer
-      run: packer init .
+      run: find . -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer init "{}"
       working-directory: ${{ env.PKR_WORKING_DIR }}
       
     - name: Packer Validate
       id: validate_packer
-      run: packer validate .
+      run: find . -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer validate "{}"
+      working-directory: ${{ env.PKR_WORKING_DIR }}
 
   ###################################################################################
   # JOB 2: PLAN & BUILD (Runs on Feat Branch Push)
