@@ -109,8 +109,7 @@ jobs:
       
     - name: Packer Validate
       id: validate_packer
-      run: find . -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer validate "{}"
-      working-directory: ${{ env.PKR_WORKING_DIR }}
+      run: find ${{ env.PKR_WORKING_DIR }} -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer validate "{}"
 
   ###################################################################################
   # JOB 2: PLAN & BUILD (Runs on Feat Branch Push)
@@ -160,11 +159,12 @@ jobs:
 
     - name: Packer Init
       id: init_packer
-      run: packer init ${{ env.PKR_WORKING_DIR }}
+      run: find . -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer init "{}"
+      working-directory: ${{ env.PKR_WORKING_DIR }}
       
     - name: Packer Validate - Feature Branch
       id: build_packer
-      run: packer validate ${{ env.PKR_WORKING_DIR }}
+      run: find ${{ env.PKR_WORKING_DIR }} -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer validate "{}"
 
   ###################################################################################
   # JOB 3: RELEASE & DEPLOY (Runs on Main Branch Push)
@@ -249,10 +249,9 @@ jobs:
 
     - name: Packer Init
       id: init_packer
-      run: packer init .
+      run: find . -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer init "{}"
       working-directory: ${{ env.PKR_WORKING_DIR }}
       
     - name: Packer Build - Main Branch (Final Image)
       id: build_packer_main
-      run: packer build -var "source_branch=main" .
-      working-directory: ${{ env.PKR_WORKING_DIR }}
+      run: find ${{ env.PKR_WORKING_DIR }} -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer build "{}"
