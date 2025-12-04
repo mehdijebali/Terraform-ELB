@@ -1,0 +1,76 @@
+# This workflow orchestrates the Continuous Integration and Continuous Delivery (CI/CD)
+# for Terraform and Packer using GitHub Actions and Semantic Release.
+name: Terraform & Automation CI/CD
+on:
+  push:
+    branches:
+      - main
+      - 'feat/**'
+      - 'feature/**'
+    tags:
+      - '*'
+
+# Define environment variables used throughout the workflow
+env:
+  TF_WORKING_DIR: ./terraform  # Path to Terraform configuration files
+  PKR_WORKING_DIR: ./packer/centos    # Path to Packer template files
+  ANSIBLE_WORKING_DIR: ./ansible # Path to Ansible playbooks/roles
+  AWS_REGION: us-east-1          # Default AWS region
+
+jobs:
+
+  ###################################################################################
+  # JOB 1: TERRAFORM PLAN (Runs on Feat Branch Push)
+  ###################################################################################
+  terraform_plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/feat/')
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.13.x
+
+    - name: Terraform Init
+      id: init_tf
+      run: terraform init
+      working-directory: ${{ env.TF_WORKING_DIR }}
+ 
+    - name: Terraform Plan
+      id: plan_tf
+      run: terraform plan
+      working-directory: ${{ env.TF_WORKING_DIR }}
+      
+  ###################################################################################
+  # JOB 2: PACKER BUILD (Runs MANUALLY)
+  ###################################################################################
+  packer_build:
+    name: Packer Build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feat' || github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Setup Packer
+      uses: hashicorp/setup-packer@v3
+
+    - name: Packer Init
+      id: init_packer
+      run: find . -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer init "{}"
+      working-directory: ${{ env.PKR_WORKING_DIR }}
+      
+    - name: Packer build - Feature Branch
+      id: build_packer
+      run: find ${{ env.PKR_WORKING_DIR }} -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer build "{}"
+      
