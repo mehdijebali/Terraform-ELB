@@ -1,0 +1,98 @@
+# This workflow orchestrates the Continuous Integration and Continuous Delivery (CI/CD)
+# for Terraform and Packer using GitHub Actions and Semantic Release.
+name: Terraform & Automation CI/CD
+on:
+  workflow_dispatch:
+
+# Define environment variables used throughout the workflow
+env:
+  TF_WORKING_DIR: ./terraform  # Path to Terraform configuration files
+  PKR_WORKING_DIR: ./packer/centos    # Path to Packer template files
+  ANSIBLE_WORKING_DIR: ./ansible # Path to Ansible playbooks/roles
+  AWS_REGION: us-east-1          # Default AWS region
+
+jobs:
+  
+  ###################################################################################
+  # JOB 1: TERRAFORM APPLY (Runs MANUALLY)
+  ###################################################################################
+  terraform_apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' &&  github.ref == 'refs/heads/main'
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.13.x
+
+    - name: Terraform Init
+      id: init_tf
+      run: terraform init
+    
+    - name: Terraform Apply
+      if: steps.semantic_release.outputs.new_release_published == 'true'
+      id: apply_tf
+      run: terraform apply -auto-approve
+    
+    - name: Upload state
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfstate
+        path: terraform.tfstate
+
+  ###################################################################################
+  # JOB 2: TERRAFORM DESTROY (Runs MANUALLY)
+  ###################################################################################
+  terraform_destroy:
+    name: Terraform Destroy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' &&  github.ref == 'refs/heads/main'
+    needs: terraform_apply
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.13.x
+    
+    - name: Download state
+      uses: actions/download-artifact@v4
+      with:
+        name: tfstate
+
+    - name: Terraform Init
+      id: init_tf
+      run: terraform init
+    
+    - name: Terraform Destroy
+      id: destroy_tf
+      run: terraform destroy -auto-approve
+    
