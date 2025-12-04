@@ -54,7 +54,7 @@ jobs:
       working-directory: ${{ env.TF_WORKING_DIR }}
       
   ###################################################################################
-  # JOB 2: PACKER BUILD (Runs MANUALLY)
+  # JOB 2: PACKER BUILD 
   ###################################################################################
   packer_build:
     name: Packer Build
