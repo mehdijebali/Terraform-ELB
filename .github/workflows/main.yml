@@ -142,12 +142,7 @@ jobs:
       id: init_tf
       run: terraform init
       working-directory: ${{ env.TF_WORKING_DIR }}
-      
-    - name: Terraform Validate
-      id: validate_tf
-      run: terraform validate
-      working-directory: ${{ env.TF_WORKING_DIR }}
-
+ 
     - name: Terraform Plan
       id: plan_tf
       run: terraform plan -no-color
@@ -162,9 +157,9 @@ jobs:
       run: find . -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer init "{}"
       working-directory: ${{ env.PKR_WORKING_DIR }}
       
-    - name: Packer Validate - Feature Branch
+    - name: Packer build - Feature Branch
       id: build_packer
-      run: find ${{ env.PKR_WORKING_DIR }} -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer validate "{}"
+      run: find ${{ env.PKR_WORKING_DIR }} -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer build "{}"
 
   ###################################################################################
   # JOB 3: RELEASE & DEPLOY (Runs on Main Branch Push)
@@ -209,24 +204,16 @@ jobs:
       with:
         terraform_version: 1.13.x
 
-    - name: Terraform Init & Validate
+    - name: Terraform Init
       if: steps.semantic_release.outputs.new_release_published == 'true'
       id: init_validate_tf
-      run: |
-        terraform init
-        terraform validate
-      working-directory: ${{ env.TF_WORKING_DIR }}
-
-    - name: Terraform Plan
-      if: steps.semantic_release.outputs.new_release_published == 'true'
-      id: plan_tf
-      run: terraform plan -out=tfplan
+      run: terraform init
       working-directory: ${{ env.TF_WORKING_DIR }}
 
     - name: Terraform Apply
       if: steps.semantic_release.outputs.new_release_published == 'true'
       id: apply_tf
-      run: terraform apply -auto-approve tfplan
+      run: terraform apply -auto-approve
       working-directory: ${{ env.TF_WORKING_DIR }}
       
     # -------------------------------------------------------------------------------
