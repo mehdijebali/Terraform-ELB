@@ -225,9 +225,9 @@ jobs:
   # JOB 5: PACKER BUILD (Runs MANUALLY)
   ###################################################################################
   packer_build:
-    name: Packer Builc
+    name: Packer Build
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch'  &&  github.ref == 'refs/heads/feat' || github.ref == 'refs/heads/main'
     needs: lint_validate_docs
 
     steps:
