@@ -2,17 +2,6 @@
 # for Terraform and Packer using GitHub Actions and Semantic Release.
 name: Terraform & Automation CI/CD
 on:
-#  pull_request:
-#    branches:
-#      - main
-#    types: [opened, synchronize, reopened]
-#  push:
-#    branches:
-#      - main
-#      - 'feat/**'
-#      - 'feature/**'
-#    tags:
-#      - '*'
   workflow_dispatch:
 
 # Define environment variables used throughout the workflow
@@ -23,127 +12,14 @@ env:
   AWS_REGION: us-east-1          # Default AWS region
 
 jobs:
-
-  ###################################################################################
-  # JOB 1: VALIDATION AND LINTING (Runs on Pull Request events)
-  ###################################################################################
-  lint_validate_docs:
-    name: Validate (PR Check)
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || github.event_name == 'push'
-    
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v6
-      
-    - name: Set up AWS credentials (required for some Terraform validation)
-      uses: aws-actions/configure-aws-credentials@v5
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
-
-    # -------------------------------------------------------------------------------
-    # 1. TERRAFORM CHECKS (Pull Request)
-    # -------------------------------------------------------------------------------
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: 1.13.x
-
-    - name: Terraform Init (Validation prerequisite)
-      id: init_tf
-      run: terraform init -upgrade -backend=false
-      working-directory: ${{ env.TF_WORKING_DIR }}
-      
-    - name: Terraform Format Check (fmt)
-      id: fmt_tf
-      run: terraform fmt -check -recursive
-      working-directory: ${{ env.TF_WORKING_DIR }}
-
-    - name: Terraform Validate
-      id: validate_tf
-      run: terraform validate
-      working-directory: ${{ env.TF_WORKING_DIR }}
-
-    - name: Run TFLint
-      uses: terraform-linters/setup-tflint@v6
-      with:
-        working_directory: ${{ env.TF_WORKING_DIR }}
-        
-    - name: Generate Terraform Docs
-      uses: terraform-docs/gh-actions@v1
-      with:
-        working-dir: ${{ env.TF_WORKING_DIR }}
-        output-file: README.md
-        output-method: inject
-        
-    # -------------------------------------------------------------------------------
-    # 2. ANSIBLE CHECKS (Pull Request)
-    # -------------------------------------------------------------------------------
-    - name: Run Ansible Lint
-      uses: ansible/ansible-lint@v25 # Use the dedicated action for linting
-      with:
-        working_directory: ${{ env.ANSIBLE_WORKING_DIR }}
-
-    # -------------------------------------------------------------------------------
-    # 3. PACKER CHECKS (Pull Request)
-    # -------------------------------------------------------------------------------
-    - name: Setup Packer
-      uses: hashicorp/setup-packer@v3
-      
-    - name: Packer Init
-      id: init_packer
-      run: find . -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer init "{}"
-      working-directory: ${{ env.PKR_WORKING_DIR }}
-      
-    - name: Packer Validate
-      id: validate_packer
-      run: find ${{ env.PKR_WORKING_DIR }} -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer validate "{}"
-
-  ###################################################################################
-  # JOB 2: TERRAFORM PLAN (Runs on Feat Branch Push)
-  ###################################################################################
-  terraform_plan:
-    name: Terraform Plan
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/feat/')
-    needs: lint_validate_docs
-
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
-
-    - name: Set up AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: 1.13.x
-
-    - name: Terraform Init
-      id: init_tf
-      run: terraform init
-      working-directory: ${{ env.TF_WORKING_DIR }}
- 
-    - name: Terraform Plan
-      id: plan_tf
-      run: terraform plan
-      working-directory: ${{ env.TF_WORKING_DIR }}
   
   ###################################################################################
-  # JOB 3: TERRAFORM APPLY (Runs MANUALLY)
+  # JOB 1: TERRAFORM APPLY (Runs MANUALLY)
   ###################################################################################
   terraform_apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' &&  github.ref == 'refs/heads/main'
-    needs: release_deploy_main
     defaults:
       run:
         working-directory: ${{ env.TF_WORKING_DIR }}
@@ -180,7 +56,7 @@ jobs:
         path: terraform.tfstate
 
   ###################################################################################
-  # JOB 4: TERRAFORM DESTROY (Runs MANUALLY)
+  # JOB 2: TERRAFORM DESTROY (Runs MANUALLY)
   ###################################################################################
   terraform_destroy:
     name: Terraform Destroy
@@ -219,52 +95,4 @@ jobs:
     - name: Terraform Destroy
       id: destroy_tf
       run: terraform destroy -auto-approve
- 
     
-  ###################################################################################
-  # JOB 5: PACKER BUILD (Runs MANUALLY)
-  ###################################################################################
-  packer_build:
-    name: Packer Build
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'  &&  github.ref == 'refs/heads/feat' || github.ref == 'refs/heads/main'
-    needs: lint_validate_docs
-
-    steps:
-    - name: Setup Packer
-      uses: hashicorp/setup-packer@v3
-
-    - name: Packer Init
-      id: init_packer
-      run: find . -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer init "{}"
-      working-directory: ${{ env.PKR_WORKING_DIR }}
-      
-    - name: Packer build - Feature Branch
-      id: build_packer
-      run: find ${{ env.PKR_WORKING_DIR }} -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer build "{}"
-
-  ###################################################################################
-  # JOB 6: SEMANTIC RELEASE & (Runs on Main Branch Push)
-  ###################################################################################
-  release_deploy_main:
-    name: Release
-    runs-on: ubuntu-latest
-    # Only run on push to main branch
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: lint_validate_docs
-
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
-      with:
-        # Fetch history for Semantic Release to analyze commits
-        fetch-depth: 0 
-
-    - name: Semantic Release
-      id: semantic_release
-      uses: cycjimmy/semantic-release-action@v4
-      env:
-        # This token MUST have the 'repo' scope (or 'contents:write' and 'releases:write' for fine-grained PAT)
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-
-      
