@@ -61,14 +61,18 @@ jobs:
     if: github.event_name == 'push'
 
     steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
     - name: Setup Packer
       uses: hashicorp/setup-packer@v3
 
     - name: Packer Init
       id: init_packer
-      run: find ${{ env.PKR_WORKING_DIR }} -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer init "{}"
+      run: find . -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer init "{}"
+      working-directory: ${{ env.PKR_WORKING_DIR }}
       
-    - name: Packer build - Feature Branch
+    - name: Packer build
       id: build_packer
       run: find ${{ env.PKR_WORKING_DIR }} -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer build "{}"
       
