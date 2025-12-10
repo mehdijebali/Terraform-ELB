@@ -157,4 +157,5 @@ jobs:
           echo "README.md is outdated. Run terraform-docs to update it."
           exit 1
         fi
+      working-dir: ${{ env.TF_WORKING_DIR }}
         
