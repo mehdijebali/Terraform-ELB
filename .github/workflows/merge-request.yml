@@ -148,6 +148,13 @@ jobs:
       uses: terraform-docs/gh-actions@v1
       with:
         working-dir: ${{ env.TF_WORKING_DIR }}
-        output-file: README.md
+        output-file: README_generated.md
         output-method: inject
+    
+    - name: Check if README.md is up to date
+      run: |
+        if ! diff -q README_generated.md README.md; then
+          echo "README.md is outdated. Run terraform-docs to update it."
+          exit 1
+        fi
         
