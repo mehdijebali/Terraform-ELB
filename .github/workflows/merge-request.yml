@@ -153,9 +153,8 @@ jobs:
     
     - name: Check if README.md is up to date
       run: |
-        if ! diff -q README_generated.md README.md; then
+        if ! diff -q ${{ env.TF_WORKING_DIR }}/README_generated.md ${{ env.TF_WORKING_DIR }}/README.md; then
           echo "README.md is outdated. Run terraform-docs to update it."
           exit 1
         fi
-      working-dir: ${{ env.TF_WORKING_DIR }}
         
