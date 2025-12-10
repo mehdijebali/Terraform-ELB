@@ -144,21 +144,12 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v6
     
-    - name: Install terraform-docs
-      run: |
-        curl -sSL https://github.com/terraform-docs/terraform-docs/releases/latest/download/terraform-docs-linux-amd64.tar.gz \
-          | tar -xz
-        sudo mv terraform-docs /usr/local/bin/
-    
-    - name: Generate README.md
-      run: |
-        terraform-docs markdown table ${{ env.TF_WORKING_DIR }} > README.md
-    # - name: Generate Terraform Docs
-    #   uses: terraform-docs/gh-actions@v1
-    #   with:
-    #     working-dir: ${{ env.TF_WORKING_DIR }}
-    #     output-file: README_generated.md
-    #     output-method: inject
+    - name: Generate Terraform Docs
+      uses: terraform-docs/gh-actions@v1
+      with:
+        working-dir: ${{ env.TF_WORKING_DIR }}
+        output-file: README_generated.md
+        output-method: inject
     
     - name: Check if README.md is up to date
       run: |
