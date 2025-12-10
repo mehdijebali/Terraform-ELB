@@ -15,26 +15,7 @@ env:
 jobs:
 
   ###################################################################################
-  # JOB 1: SET UP AWS CREDENTIALS 
-  ###################################################################################
-  setup_aws_credentials:
-    name: Setup AWS Credentials
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v6
-      
-    - name: Set up AWS credentials (required for some Terraform validation)
-      uses: aws-actions/configure-aws-credentials@v5
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
-  
-  ###################################################################################
-  # JOB 2: TERRAFORM FORMAT 
+  # JOB 1: TERRAFORM FORMAT 
   ###################################################################################
   terraform_format:
     name: Terraform Format
@@ -55,7 +36,7 @@ jobs:
       working-directory: ${{ env.TF_WORKING_DIR }}
       
   ###################################################################################
-  # JOB 3: ANSIBLE LINT 
+  # JOB 2: ANSIBLE LINT 
   ###################################################################################
   ansible_lint:
     name: Ansible Lint
@@ -71,7 +52,7 @@ jobs:
         working_directory: ${{ env.ANSIBLE_WORKING_DIR }}
 
   ###################################################################################
-  # JOB 4: PACKER CHECKS 
+  # JOB 3: PACKER CHECKS 
   ###################################################################################
   packer_validate:
     name: Packer Validate
@@ -85,9 +66,10 @@ jobs:
     - name: Set up AWS credentials (required for some Terraform validation)
       uses: aws-actions/configure-aws-credentials@v5
       with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
       
-
     - name: Setup Packer
       uses: hashicorp/setup-packer@v3
       
@@ -101,7 +83,7 @@ jobs:
       run: find ${{ env.PKR_WORKING_DIR }} -type f -name "*.pkr.hcl" -print0 | xargs -0 -I {} packer validate "{}"
   
   ###################################################################################
-  # JOB 5: TERRAFORM VALIDATE
+  # JOB 4: TERRAFORM VALIDATE
   ###################################################################################
   terraform_validate:
     name: Terraform Validate
@@ -116,6 +98,8 @@ jobs:
     - name: Set up AWS credentials (required for some Terraform validation)
       uses: aws-actions/configure-aws-credentials@v5
       with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
     - name: Setup Terraform
@@ -134,7 +118,7 @@ jobs:
       working-directory: ${{ env.TF_WORKING_DIR }}
 
   ###################################################################################
-  # JOB 6: TERRAFORM LINT
+  # JOB 5: TERRAFORM LINT
   ###################################################################################
   terraform_lint:
     name: Terraform Lint
@@ -151,7 +135,7 @@ jobs:
         working_directory: ${{ env.TF_WORKING_DIR }}
 
   ###################################################################################
-  # JOB 7: TERRAFORM DOCS
+  # JOB 6: TERRAFORM DOCS
   ###################################################################################
   terraform_docs:
     name: Terraform Validate Docs
