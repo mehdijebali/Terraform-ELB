@@ -84,6 +84,9 @@ jobs:
     
     - name: Set up AWS credentials (required for some Terraform validation)
       uses: aws-actions/configure-aws-credentials@v5
+      with:
+        aws-region: ${{ env.AWS_REGION }}
+      
 
     - name: Setup Packer
       uses: hashicorp/setup-packer@v3
@@ -112,6 +115,8 @@ jobs:
       
     - name: Set up AWS credentials (required for some Terraform validation)
       uses: aws-actions/configure-aws-credentials@v5
+      with:
+        aws-region: ${{ env.AWS_REGION }}
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
@@ -127,7 +132,7 @@ jobs:
       id: validate_tf
       run: terraform validate
       working-directory: ${{ env.TF_WORKING_DIR }}
-                
+
   ###################################################################################
   # JOB 6: TERRAFORM LINT
   ###################################################################################
