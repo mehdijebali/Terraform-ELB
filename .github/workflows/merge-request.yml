@@ -151,6 +151,10 @@ jobs:
         output-file: README_generated.md
         output-method: inject
     
+    - name: Get Generated File
+      run: |
+        cat ${{ env.TF_WORKING_DIR }}/README_generated.md
+        
     - name: Check if README.md is up to date
       run: |
         if ! diff -q ${{ env.TF_WORKING_DIR }}/README_generated.md ${{ env.TF_WORKING_DIR }}/README.md; then
