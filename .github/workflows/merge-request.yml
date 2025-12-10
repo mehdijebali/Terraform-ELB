@@ -144,12 +144,14 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v6
         
-    - name: Generate Terraform Docs
+    - name: Setup Terraform Docs
       uses: terraform-docs/gh-actions@v1
       with:
-        working-dir: ${{ env.TF_WORKING_DIR }}
-        output-file: README_generated.md
-        output-method: inject
+        version: latest
+    
+    - name: Generate docs
+      run: |
+        terraform-docs markdown table ${{ env.TF_WORKING_DIR }} > README_generated.md
     
     - name: Check if README.md is up to date
       run: |
