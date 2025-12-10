@@ -46,10 +46,10 @@ jobs:
       id: apply_tf
       run: terraform apply -auto-approve
     
-    - name: Upload state
-      uses: actions/upload-artifact@v4
+    - name: Upload State File
+      uses: actions/cache@v4
       with:
-        name: tfstate
         path: terraform.tfstate
+        key: tfstate
 
     
