@@ -43,7 +43,6 @@ jobs:
       run: terraform init
     
     - name: Terraform Apply
-      if: steps.semantic_release.outputs.new_release_published == 'true'
       id: apply_tf
       run: terraform apply -auto-approve
     
