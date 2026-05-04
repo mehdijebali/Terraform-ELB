@@ -17,7 +17,7 @@ jobs:
   terraform_apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' &&  github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch'
     defaults:
       run:
         working-directory: ${{ env.TF_WORKING_DIR }}
@@ -45,11 +45,4 @@ jobs:
     - name: Terraform Apply
       id: apply_tf
       run: terraform apply -auto-approve
-    
-    - name: Upload state
-      uses: actions/upload-artifact@v4
-      with:
-        name: tfstate
-        path: terraform.tfstate
-
     

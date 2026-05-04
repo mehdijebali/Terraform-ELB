@@ -16,7 +16,7 @@ jobs:
   terraform_destroy:
     name: Terraform Destroy
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' &&  github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch'
     defaults:
       run:
         working-directory: ${{ env.TF_WORKING_DIR }}
