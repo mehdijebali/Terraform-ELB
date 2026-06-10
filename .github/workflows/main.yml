@@ -41,10 +41,19 @@ jobs:
     - name: Terraform Init
       id: init_tf
       run: terraform init
+      env:
+        TF_HTTP_ADDRESS: "https://gitlab.com/api/v4/projects/${{ env.GL_PROJECT_ID }}/terraform/state/${{ env.TF_STATE_NAME }}"
+        TF_HTTP_LOCK_ADDRESS: "https://gitlab.com/api/v4/projects/${{ env.GL_PROJECT_ID }}/terraform/state/${{ env.TF_STATE_NAME }}/lock"
+        TF_HTTP_UNLOCK_ADDRESS: "https://gitlab.com/api/v4/projects/${{ env.GL_PROJECT_ID }}/terraform/state/${{ env.TF_STATE_NAME }}/lock"
+        TF_HTTP_USERNAME: ${{ env.GL_USERNAME }}
+        TF_HTTP_PASSWORD: ${{ secrets.GITLAB_TF_TOKEN }}
     
     - name: Terraform Apply
       id: apply_tf
       run: terraform apply -auto-approve
+      env:
+        TF_HTTP_USERNAME: ${{ env.GL_USERNAME }}
+        TF_HTTP_PASSWORD: ${{ secrets.GITLAB_TF_TOKEN }}
     
     - name: Upload state
       uses: actions/upload-artifact@v4
