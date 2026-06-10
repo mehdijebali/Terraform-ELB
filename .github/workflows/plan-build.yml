@@ -55,6 +55,7 @@ jobs:
       id: plan_tf
       run: terraform plan
       env:
+        TF_HTTP_ADDRESS: "https://gitlab.com/api/v4/projects/${{ env.GL_PROJECT_ID }}/terraform/state/${{ env.TF_STATE_NAME }}"
         TF_HTTP_USERNAME: ${{ env.GL_USERNAME }}
         TF_HTTP_PASSWORD: ${{ secrets.GITLAB_TF_TOKEN }}
       working-directory: ${{ env.TF_WORKING_DIR }}

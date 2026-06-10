@@ -52,13 +52,7 @@ jobs:
       id: apply_tf
       run: terraform apply -auto-approve
       env:
+        TF_HTTP_ADDRESS: "https://gitlab.com/api/v4/projects/${{ env.GL_PROJECT_ID }}/terraform/state/${{ env.TF_STATE_NAME }}"
         TF_HTTP_USERNAME: ${{ env.GL_USERNAME }}
         TF_HTTP_PASSWORD: ${{ secrets.GITLAB_TF_TOKEN }}
-    
-    - name: Upload state
-      uses: actions/upload-artifact@v4
-      with:
-        name: tfstate
-        path: terraform.tfstate
-
     
