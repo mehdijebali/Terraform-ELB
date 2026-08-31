@@ -33,7 +33,7 @@ data "aws_ami" "packer_ami" {
 }
 
 module "network" {
-  source = "github.com/mehdijebali/terraform-modules//network?ref=v1.1.0"
+  source = "github.com/mehdijebali/terraform-modules//network?ref=v1.1.1"
 
   VPC_NAME           = var.VPC_NAME
   VPC_CIDR_BLOCK     = var.VPC_CIDR_BLOCK
@@ -42,6 +42,7 @@ module "network" {
   AVAILABILITY_ZONES = var.AVAILABILITY_ZONES
   SUBNET_NAMES       = var.SUBNET_NAMES
   SUBNET_IPS         = var.SUBNET_IPS
+  BUCKET_NAME        = var.S3_BUCKET_NAME_FLOW_LOGS
 }
 
 module "ssm-role" {

@@ -7,7 +7,7 @@ variable "AWS_REGION" {
 variable "INSTANCE_TYPE" {
   type        = string
   description = "AWS Instance type"
-  default     = "t2.micro"
+  default     = "t3.small"
 }
 
 variable "LAUNCH_TEMPLATE_NAME" {
@@ -104,4 +104,10 @@ variable "LD_NAME" {
   type        = string
   description = "Linux Distribution"
   default     = "centos"
+}
+
+variable "S3_BUCKET_NAME_FLOW_LOGS" {
+  type        = string
+  description = "S3 bucket name to store network logs"
+  default     = "network-module-vpc-logs"
 }
