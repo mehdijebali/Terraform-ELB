@@ -22,7 +22,7 @@ jobs:
   terraform_plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/feat/')
+    if: github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/feat/') || startsWith(github.ref, 'refs/heads/fix/'))
 
     steps:
     - name: Checkout Code
